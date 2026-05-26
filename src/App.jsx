@@ -9,7 +9,14 @@ import KontantstromOversikt from './components/Kontantstrom/KontantstromOversikt
 import SimuleringGraf from './components/Simulering/SimuleringGraf.jsx'
 import SimuleringInnstillinger from './components/Simulering/SimuleringInnstillinger.jsx'
 import FinansiellHelse from './components/Helse/FinansiellHelse.jsx'
-import { hentData, lagreData, lagreFordeling, hentFordeling } from './utils/lagring.js'
+import {
+  hentData,
+  lagreData,
+  lagreFordeling,
+  hentFordeling,
+  hentHendelser,
+  lagreHendelser,
+} from './utils/lagring.js'
 
 const initialState = {
   husholdning: {
@@ -67,6 +74,7 @@ export default function App() {
   const [state, setState] = useState(() => mergeWithDefaults(hentData()))
   const [fane, setFane] = useState('husholdning')
   const [fordeling, setFordeling] = useState(() => hentFordeling())
+  const [hendelser, setHendelser] = useState(() => hentHendelser())
 
   useEffect(() => {
     lagreData(state)
@@ -75,6 +83,11 @@ export default function App() {
   function oppdaterFordeling(aksjer, gjeld) {
     lagreFordeling(aksjer, gjeld)
     setFordeling({ aksjer, gjeld })
+  }
+
+  function oppdaterHendelser(ny) {
+    lagreHendelser(ny)
+    setHendelser(ny)
   }
 
   const oppdater = useMemo(
@@ -136,6 +149,8 @@ export default function App() {
               antagelser={state.antagelser}
               aksjeAndel={aksjeAndel}
               gjeldsAndel={gjeldsAndel}
+              hendelser={hendelser}
+              onHendelserChange={oppdaterHendelser}
             />
           </>
         )}
@@ -147,6 +162,7 @@ export default function App() {
             antagelser={state.antagelser}
             aksjeAndel={aksjeAndel}
             gjeldsAndel={gjeldsAndel}
+            hendelser={hendelser}
           />
         )}
       </main>

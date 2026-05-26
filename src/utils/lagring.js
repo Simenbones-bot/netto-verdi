@@ -73,3 +73,20 @@ export function hentFordeling() {
   }
   return { aksjer: 35, gjeld: 35 }
 }
+
+const HENDELSER_NOKKEL = 'fremtidige-hendelser'
+
+export function lagreHendelser(hendelser) {
+  localStorage.setItem(HENDELSER_NOKKEL, JSON.stringify(hendelser))
+}
+
+export function hentHendelser() {
+  const v = localStorage.getItem(HENDELSER_NOKKEL)
+  if (!v) return []
+  try {
+    const arr = JSON.parse(v)
+    return Array.isArray(arr) ? arr : []
+  } catch {
+    return []
+  }
+}
