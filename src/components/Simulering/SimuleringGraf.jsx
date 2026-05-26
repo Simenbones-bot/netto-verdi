@@ -17,6 +17,7 @@ import { hendelseFarge, hendelseLabel, kortBeskrivelse } from '../../utils/hende
 import HendelseListe from './HendelseListe.jsx'
 import HendelseModal from './HendelseModal.jsx'
 import HendelseIkon from './HendelseIkon.jsx'
+import OkonomiOversikt from './OkonomiOversikt.jsx'
 
 export default function SimuleringGraf({
   husholdning,
@@ -32,8 +33,8 @@ export default function SimuleringGraf({
   const [modalApen, setModalApen] = useState(false)
   const [redigerer, setRedigerer] = useState(null)
 
-  const { data, varsler } = useMemo(() => {
-    const { datapunkter, varsler } = kjorSimulering(
+  const { data, varsler, aarligeRader } = useMemo(() => {
+    const { datapunkter, varsler, aarligeRader } = kjorSimulering(
       husholdning,
       eiendeler,
       gjeld,
@@ -53,7 +54,7 @@ export default function SimuleringGraf({
       ...r,
       boligEgenkapital: Math.max(0, r.boligverdi - r.totalGjeld * boligLanAndel),
     }))
-    return { data: beriket, varsler }
+    return { data: beriket, varsler, aarligeRader }
   }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri])
 
   const sluttFormue = data[data.length - 1]?.nettoFormue ?? 0
@@ -270,6 +271,8 @@ export default function SimuleringGraf({
           lån etter annuitetsmodellen. Hendelser markeres med stiplede linjer.
         </p>
       </div>
+
+      <OkonomiOversikt rader={aarligeRader} etterGjeldfri={etterGjeldfri} />
 
       <HendelseModal
         apen={modalApen}

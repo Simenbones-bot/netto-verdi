@@ -120,6 +120,7 @@ export function kjorSimulering(
 ) {
   const ar = 15
   const datapunkter = []
+  const aarligeRader = []
 
   const state = {
     baseLonn1: Number(husholdning.person1?.bruttoInntekt) || 0,
@@ -221,11 +222,21 @@ export function kjorSimulering(
     )
 
     // Fordel overskudd: aksjer / ekstra gjeldsnedbetaling / forbruk
+    let tilAksjer = 0
+    let tilGjeld = 0
+    let tilGjeldfri = 0
+    let tilBank = 0
+    let tilForbruk = 0
+    let underskuddBank = 0
     if (aarligOverskudd > 0) {
       const a = Math.max(0, Math.min(1, Number(aksjeAndel) || 0))
       const g = Math.max(0, Math.min(1 - a, Number(gjeldsAndel) || 0))
-      state.aksjer += aarligOverskudd * a
-      let ekstra = aarligOverskudd * g
+      const aksjeBel = aarligOverskudd * a
+      const gjeldBudsjett = aarligOverskudd * g
+      tilAksjer = aksjeBel
+      tilForbruk = aarligOverskudd - aksjeBel - gjeldBudsjett
+      state.aksjer += aksjeBel
+      let ekstra = gjeldBudsjett
       const indekser = state.lan
         .map((l, idx) => ({ rente: l.rente || 0, restgjeld: l.restgjeld, idx }))
         .sort((x, y) => y.rente - x.rente)
@@ -238,17 +249,42 @@ export function kjorSimulering(
             restgjeld: Math.max(0, state.lan[ref.idx].restgjeld - betalt),
           }
           ekstra -= betalt
+          tilGjeld += betalt
         }
       }
+      tilGjeldfri = ekstra
       if (ekstra > 0) {
-        if (etterGjeldfri === 'bank') state.bank += ekstra
-        else if (etterGjeldfri === 'forbruk') {
-          // konsumeres — ingen formuesendring
-        } else state.aksjer += ekstra
+        if (etterGjeldfri === 'bank') {
+          state.bank += ekstra
+          tilBank += ekstra
+        } else if (etterGjeldfri === 'forbruk') {
+          tilForbruk += ekstra
+        } else {
+          state.aksjer += ekstra
+          tilAksjer += ekstra
+        }
       }
     } else {
       state.bank += aarligOverskudd
+      underskuddBank = aarligOverskudd
     }
+
+    const restgjeldEtter = state.lan.reduce((s, l) => s + l.restgjeld, 0)
+    aarligeRader.push({
+      ar: i,
+      inntekt: Math.round(nettoArlig),
+      sifo: Math.round(state.sifoMnd * 12),
+      faste: Math.round(state.fasteMnd * 12),
+      terminer: Math.round(aarligeTerminer),
+      overskudd: Math.round(aarligOverskudd),
+      tilAksjer: Math.round(tilAksjer),
+      tilGjeld: Math.round(tilGjeld),
+      tilGjeldfri: Math.round(tilGjeldfri),
+      tilBank: Math.round(tilBank),
+      tilForbruk: Math.round(tilForbruk),
+      underskuddBank: Math.round(underskuddBank),
+      restgjeld: Math.round(restgjeldEtter),
+    })
 
     if (state.bank < 0 && !state.varsler.some((v) => v.aar === i && v.type === 'negativ_bank')) {
       state.varsler.push({ aar: i, type: 'negativ_bank', belop: Math.abs(state.bank) })
@@ -267,7 +303,7 @@ export function kjorSimulering(
     snapshot(i)
   }
 
-  return { datapunkter, varsler: state.varsler }
+  return { datapunkter, varsler: state.varsler, aarligeRader }
 }
 
 export function oppsummerKontantstrom(husholdning, gjeld) {
