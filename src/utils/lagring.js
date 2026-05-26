@@ -49,3 +49,27 @@ export function hentSparkraftFordeling() {
   const lagret = localStorage.getItem(SPARKRAFT_NOKKEL)
   return lagret ? parseInt(lagret, 10) : 70
 }
+
+const FORDELING_NOKKEL = 'overskudd-fordeling'
+
+export function lagreFordeling(aksjer, gjeld) {
+  localStorage.setItem(FORDELING_NOKKEL, JSON.stringify({ aksjer, gjeld }))
+}
+
+export function hentFordeling() {
+  const lagret = localStorage.getItem(FORDELING_NOKKEL)
+  if (lagret) {
+    try {
+      return JSON.parse(lagret)
+    } catch {
+      // fall through to migration
+    }
+  }
+  // Migrate from old single-slider key
+  const gammelt = localStorage.getItem(SPARKRAFT_NOKKEL)
+  if (gammelt) {
+    const aksjer = parseInt(gammelt, 10)
+    return { aksjer: Math.min(aksjer, 70), gjeld: 35 }
+  }
+  return { aksjer: 35, gjeld: 35 }
+}

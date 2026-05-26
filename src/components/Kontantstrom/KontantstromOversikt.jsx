@@ -6,11 +6,24 @@ function tusen(tall) {
   return Math.round(tall).toLocaleString('nb-NO').replace(/,/g, ' ')
 }
 
-function SparkraftSlider({ overskudd, aksjeProsent, onEndring }) {
+function OverskuddFordeling({ overskudd, fordeling, onEndring }) {
   const harOverskudd = overskudd > 0
-  const forbrukProsent = 100 - aksjeProsent
-  const aksjeKr = harOverskudd ? overskudd * (aksjeProsent / 100) : 0
-  const forbrukKr = harOverskudd ? overskudd * (forbrukProsent / 100) : 0
+  const { aksjer, gjeld } = fordeling
+  const forbruk = Math.max(0, 100 - aksjer - gjeld)
+
+  const aksjeKr = harOverskudd ? overskudd * (aksjer / 100) : 0
+  const gjeldKr = harOverskudd ? overskudd * (gjeld / 100) : 0
+  const forbrukKr = harOverskudd ? overskudd * (forbruk / 100) : 0
+
+  function endreAksjer(nyVerdi) {
+    const a = Math.min(nyVerdi, 100 - gjeld)
+    onEndring(a, gjeld)
+  }
+
+  function endreGjeld(nyVerdi) {
+    const g = Math.min(nyVerdi, 100 - aksjer)
+    onEndring(aksjer, g)
+  }
 
   return (
     <div style={{ marginTop: '1rem' }}>
@@ -32,57 +45,83 @@ function SparkraftSlider({ overskudd, aksjeProsent, onEndring }) {
         </p>
       ) : null}
 
-      <input
-        type="range"
-        className="sparkraft-slider"
-        min={0}
-        max={100}
-        step={1}
-        value={aksjeProsent}
-        disabled={!harOverskudd}
-        style={{ '--val': `${aksjeProsent}%` }}
-        onChange={(e) => onEndring(Number(e.target.value))}
-      />
+      <div className="to-slidere">
+        <div className="slider-gruppe">
+          <label className="slider-gruppe__label">
+            Aksjesparig&nbsp;<strong>{aksjer}%</strong>
+          </label>
+          <input
+            type="range"
+            className="sparkraft-slider"
+            min={0}
+            max={100}
+            step={1}
+            value={aksjer}
+            disabled={!harOverskudd}
+            style={{ '--val': `${aksjer}%` }}
+            onChange={(e) => endreAksjer(Number(e.target.value))}
+          />
+        </div>
+        <div className="slider-gruppe">
+          <label className="slider-gruppe__label">
+            Ekstra gjeldsnedbetaling&nbsp;<strong>{gjeld}%</strong>
+          </label>
+          <input
+            type="range"
+            className="sparkraft-slider sparkraft-slider--gjeld"
+            min={0}
+            max={100}
+            step={1}
+            value={gjeld}
+            disabled={!harOverskudd}
+            style={{ '--val': `${gjeld}%` }}
+            onChange={(e) => endreGjeld(Number(e.target.value))}
+          />
+        </div>
+      </div>
 
       <div className="fordeling-bar" aria-hidden="true">
         <div
           className="fordeling-bar__aksjer"
-          style={{ width: `${aksjeProsent}%` }}
+          style={{ width: `${aksjer}%` }}
         >
-          {aksjeProsent >= 15 ? `${aksjeProsent}% aksjer` : ''}
+          {aksjer >= 12 ? `${aksjer}%` : ''}
+        </div>
+        <div
+          className="fordeling-bar__gjeld"
+          style={{ width: `${gjeld}%` }}
+        >
+          {gjeld >= 12 ? `${gjeld}%` : ''}
         </div>
         <div
           className="fordeling-bar__forbruk"
-          style={{ width: `${forbrukProsent}%` }}
+          style={{ width: `${forbruk}%` }}
         >
-          {forbrukProsent >= 15 ? `${forbrukProsent}% forbruk` : ''}
+          {forbruk >= 12 ? `${forbruk}%` : ''}
         </div>
       </div>
 
       <div className="fordeling-rader">
         <div className="fordeling-rad">
           <span>
-            <span
-              className="fordeling-rad__dot"
-              style={{ background: 'var(--primary)' }}
-            />
-            Aksjesparig ({aksjeProsent}%)
+            <span className="fordeling-rad__dot" style={{ background: 'var(--primary)' }} />
+            Aksjesparig ({aksjer}%)
           </span>
-          <strong>
-            {harOverskudd ? `${tusen(aksjeKr)} kr/mnd` : '–'}
-          </strong>
+          <strong>{harOverskudd ? `${tusen(aksjeKr)} kr/mnd` : '–'}</strong>
         </div>
         <div className="fordeling-rad">
           <span>
-            <span
-              className="fordeling-rad__dot"
-              style={{ background: '#aab8b0' }}
-            />
-            Annet forbruk ({forbrukProsent}%)
+            <span className="fordeling-rad__dot" style={{ background: 'var(--accent)' }} />
+            Ekstra gjeldsnedbetaling ({gjeld}%)
           </span>
-          <strong>
-            {harOverskudd ? `${tusen(forbrukKr)} kr/mnd` : '–'}
-          </strong>
+          <strong>{harOverskudd ? `${tusen(gjeldKr)} kr/mnd` : '–'}</strong>
+        </div>
+        <div className="fordeling-rad">
+          <span>
+            <span className="fordeling-rad__dot" style={{ background: '#888780' }} />
+            Annet forbruk ({forbruk}%)
+          </span>
+          <strong>{harOverskudd ? `${tusen(forbrukKr)} kr/mnd` : '–'}</strong>
         </div>
       </div>
     </div>
@@ -92,8 +131,8 @@ function SparkraftSlider({ overskudd, aksjeProsent, onEndring }) {
 export default function KontantstromOversikt({
   husholdning,
   gjeld,
-  aksjeProsent,
-  onAksjeProsentChange,
+  fordeling,
+  onFordelingChange,
 }) {
   const k = oppsummerKontantstrom(husholdning, gjeld)
   const pos = k.overskuddMaaned >= 0
@@ -206,10 +245,10 @@ export default function KontantstromOversikt({
           </div>
         </div>
 
-        <SparkraftSlider
+        <OverskuddFordeling
           overskudd={k.overskuddMaaned}
-          aksjeProsent={aksjeProsent}
-          onEndring={onAksjeProsentChange}
+          fordeling={fordeling}
+          onEndring={onFordelingChange}
         />
       </div>
     </>

@@ -9,7 +9,7 @@ import KontantstromOversikt from './components/Kontantstrom/KontantstromOversikt
 import SimuleringGraf from './components/Simulering/SimuleringGraf.jsx'
 import SimuleringInnstillinger from './components/Simulering/SimuleringInnstillinger.jsx'
 import FinansiellHelse from './components/Helse/FinansiellHelse.jsx'
-import { hentData, lagreData, hentSparkraftFordeling, lagreSparkraftFordeling } from './utils/lagring.js'
+import { hentData, lagreData, lagreFordeling, hentFordeling } from './utils/lagring.js'
 
 const initialState = {
   husholdning: {
@@ -66,15 +66,15 @@ const FANER = [
 export default function App() {
   const [state, setState] = useState(() => mergeWithDefaults(hentData()))
   const [fane, setFane] = useState('husholdning')
-  const [aksjeProsent, setAksjeProsent] = useState(() => hentSparkraftFordeling())
+  const [fordeling, setFordeling] = useState(() => hentFordeling())
 
   useEffect(() => {
     lagreData(state)
   }, [state])
 
-  function oppdaterAksjeProsent(prosent) {
-    lagreSparkraftFordeling(prosent)
-    setAksjeProsent(prosent)
+  function oppdaterFordeling(aksjer, gjeld) {
+    lagreFordeling(aksjer, gjeld)
+    setFordeling({ aksjer, gjeld })
   }
 
   const oppdater = useMemo(
@@ -87,7 +87,8 @@ export default function App() {
     []
   )
 
-  const aksjeAndel = aksjeProsent / 100
+  const aksjeAndel = fordeling.aksjer / 100
+  const gjeldsAndel = fordeling.gjeld / 100
 
   return (
     <div className="app">
@@ -118,8 +119,8 @@ export default function App() {
           <KontantstromOversikt
             husholdning={state.husholdning}
             gjeld={state.gjeld}
-            aksjeProsent={aksjeProsent}
-            onAksjeProsentChange={oppdaterAksjeProsent}
+            fordeling={fordeling}
+            onFordelingChange={oppdaterFordeling}
           />
         )}
         {fane === 'simulering' && (
@@ -134,6 +135,7 @@ export default function App() {
               gjeld={state.gjeld}
               antagelser={state.antagelser}
               aksjeAndel={aksjeAndel}
+              gjeldsAndel={gjeldsAndel}
             />
           </>
         )}
@@ -144,6 +146,7 @@ export default function App() {
             gjeld={state.gjeld}
             antagelser={state.antagelser}
             aksjeAndel={aksjeAndel}
+            gjeldsAndel={gjeldsAndel}
           />
         )}
       </main>

@@ -107,7 +107,7 @@ function nedbetalEttAr(lan) {
   }
 }
 
-export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel = 0.7) {
+export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel = 0.35, gjeldsAndel = 0.35) {
   const ar = 15
   const resultat = []
 
@@ -191,11 +191,25 @@ export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeA
         : { restgjeld: 0, lopetidAr: 0, betalt: 0 }
     )
 
-    // Reinvester andel av overskudd i aksjer; resten er forbruk
+    // Fordel overskudd: aksjer / ekstra gjeldsnedbetaling / forbruk
     if (aarligOverskudd > 0) {
-      const andel = Math.max(0, Math.min(1, Number(aksjeAndel) || 0))
-      aksjer += aarligOverskudd * andel
-      // (1 - andel) er forbruk og bygger ikke kapital
+      const a = Math.max(0, Math.min(1, Number(aksjeAndel) || 0))
+      const g = Math.max(0, Math.min(1 - a, Number(gjeldsAndel) || 0))
+      aksjer += aarligOverskudd * a
+      // Ekstra gjeldsnedbetaling — debt avalanche (høyest rente først)
+      let ekstra = aarligOverskudd * g
+      const sortert = lan
+        .map((l, i) => ({ ...l, _idx: i }))
+        .sort((x, y) => (y.rente || 0) - (x.rente || 0))
+      for (const l of sortert) {
+        if (ekstra <= 0) break
+        const betalt = Math.min(ekstra, lan[l._idx].restgjeld)
+        if (betalt > 0) {
+          lan[l._idx] = { ...lan[l._idx], restgjeld: Math.max(0, lan[l._idx].restgjeld - betalt) }
+          ekstra -= betalt
+        }
+      }
+      if (ekstra > 0) aksjer += ekstra // alle lån nedbetalt
     } else {
       bank += aarligOverskudd // trekk fra bank ved underskudd
     }
