@@ -115,7 +115,8 @@ export function kjorSimulering(
   antagelser,
   aksjeAndel = 0.35,
   gjeldsAndel = 0.35,
-  hendelser = []
+  hendelser = [],
+  etterGjeldfri = 'aksjer'
 ) {
   const ar = 15
   const datapunkter = []
@@ -239,7 +240,12 @@ export function kjorSimulering(
           ekstra -= betalt
         }
       }
-      if (ekstra > 0) state.aksjer += ekstra
+      if (ekstra > 0) {
+        if (etterGjeldfri === 'bank') state.bank += ekstra
+        else if (etterGjeldfri === 'forbruk') {
+          // konsumeres — ingen formuesendring
+        } else state.aksjer += ekstra
+      }
     } else {
       state.bank += aarligOverskudd
     }

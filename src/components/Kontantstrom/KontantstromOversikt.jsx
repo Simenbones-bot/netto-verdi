@@ -6,6 +6,39 @@ function tusen(tall) {
   return Math.round(tall).toLocaleString('nb-NO').replace(/,/g, ' ')
 }
 
+function EtterGjeldfriToggle({ verdi, onChange }) {
+  const valg = [
+    { id: 'aksjer', label: 'Aksjer' },
+    { id: 'bank', label: 'Bank' },
+    { id: 'forbruk', label: 'Forbruk' },
+  ]
+  return (
+    <div className="gjeldfri-toggle">
+      <div className="gjeldfri-toggle__label">Når gjelden er nedbetalt</div>
+      <div className="gjeldfri-toggle__hjelp">
+        Hva skal "ekstra gjeldsnedbetaling"-andelen brukes til når all gjeld er null?
+      </div>
+      <div className="gjeldfri-toggle__gruppe" role="radiogroup">
+        {valg.map((v) => (
+          <button
+            key={v.id}
+            type="button"
+            role="radio"
+            aria-checked={verdi === v.id}
+            className={
+              'gjeldfri-toggle__knapp' +
+              (verdi === v.id ? ' gjeldfri-toggle__knapp--aktiv' : '')
+            }
+            onClick={() => onChange(v.id)}
+          >
+            {v.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function OverskuddFordeling({ overskudd, fordeling, onEndring }) {
   const harOverskudd = overskudd > 0
   const { aksjer, gjeld } = fordeling
@@ -133,6 +166,8 @@ export default function KontantstromOversikt({
   gjeld,
   fordeling,
   onFordelingChange,
+  etterGjeldfri = 'aksjer',
+  onEtterGjeldfriChange,
 }) {
   const k = oppsummerKontantstrom(husholdning, gjeld)
   const pos = k.overskuddMaaned >= 0
@@ -249,6 +284,11 @@ export default function KontantstromOversikt({
           overskudd={k.overskuddMaaned}
           fordeling={fordeling}
           onEndring={onFordelingChange}
+        />
+
+        <EtterGjeldfriToggle
+          verdi={etterGjeldfri}
+          onChange={onEtterGjeldfriChange}
         />
       </div>
     </>

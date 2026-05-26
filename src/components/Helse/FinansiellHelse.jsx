@@ -269,6 +269,7 @@ export default function FinansiellHelse({
   aksjeAndel = 0.35,
   gjeldsAndel = 0.35,
   hendelser = [],
+  etterGjeldfri = 'aksjer',
 }) {
   const [pensjonAktiv, setPensjonAktiv] = useState(() => hentPensjonStatus())
   const [forsikring, setForsikring] = useState(() => hentForsikring())
@@ -290,7 +291,7 @@ export default function FinansiellHelse({
       husholdning.person1?.bruttoInntekt,
       husholdning.person2?.bruttoInntekt
     )
-    const { datapunkter: sim } = kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser)
+    const { datapunkter: sim } = kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri)
 
     // Likvide midler (buffer)
     const likvide = (Number(eiendeler.bankinnskudd) || 0) + (Number(eiendeler.bsu) || 0)
@@ -333,7 +334,7 @@ export default function FinansiellHelse({
     )
 
     return { v, samletScore }
-  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, pensjonAktiv, forsikring])
+  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri, pensjonAktiv, forsikring])
 
   const { v, samletScore } = data
 

@@ -74,6 +74,18 @@ export function hentFordeling() {
   return { aksjer: 35, gjeld: 35 }
 }
 
+const ETTER_GJELDFRI_NOKKEL = 'etter-gjeldfri'
+
+export function lagreEtterGjeldfri(verdi) {
+  localStorage.setItem(ETTER_GJELDFRI_NOKKEL, verdi)
+}
+
+export function hentEtterGjeldfri() {
+  const v = localStorage.getItem(ETTER_GJELDFRI_NOKKEL)
+  if (v === 'aksjer' || v === 'bank' || v === 'forbruk') return v
+  return 'aksjer'
+}
+
 const HENDELSER_NOKKEL = 'fremtidige-hendelser'
 
 export function lagreHendelser(hendelser) {

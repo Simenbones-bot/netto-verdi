@@ -16,6 +16,8 @@ import {
   hentFordeling,
   hentHendelser,
   lagreHendelser,
+  hentEtterGjeldfri,
+  lagreEtterGjeldfri,
 } from './utils/lagring.js'
 
 const initialState = {
@@ -75,6 +77,7 @@ export default function App() {
   const [fane, setFane] = useState('husholdning')
   const [fordeling, setFordeling] = useState(() => hentFordeling())
   const [hendelser, setHendelser] = useState(() => hentHendelser())
+  const [etterGjeldfri, setEtterGjeldfri] = useState(() => hentEtterGjeldfri())
 
   useEffect(() => {
     lagreData(state)
@@ -88,6 +91,11 @@ export default function App() {
   function oppdaterHendelser(ny) {
     lagreHendelser(ny)
     setHendelser(ny)
+  }
+
+  function oppdaterEtterGjeldfri(verdi) {
+    lagreEtterGjeldfri(verdi)
+    setEtterGjeldfri(verdi)
   }
 
   const oppdater = useMemo(
@@ -134,6 +142,8 @@ export default function App() {
             gjeld={state.gjeld}
             fordeling={fordeling}
             onFordelingChange={oppdaterFordeling}
+            etterGjeldfri={etterGjeldfri}
+            onEtterGjeldfriChange={oppdaterEtterGjeldfri}
           />
         )}
         {fane === 'simulering' && (
@@ -151,6 +161,7 @@ export default function App() {
               gjeldsAndel={gjeldsAndel}
               hendelser={hendelser}
               onHendelserChange={oppdaterHendelser}
+              etterGjeldfri={etterGjeldfri}
             />
           </>
         )}
@@ -163,6 +174,7 @@ export default function App() {
             aksjeAndel={aksjeAndel}
             gjeldsAndel={gjeldsAndel}
             hendelser={hendelser}
+            etterGjeldfri={etterGjeldfri}
           />
         )}
       </main>

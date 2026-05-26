@@ -871,6 +871,49 @@ input, select {
   cursor: pointer;
 }
 
+.gjeldfri-toggle {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+.gjeldfri-toggle__label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+.gjeldfri-toggle__hjelp {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.55rem;
+}
+.gjeldfri-toggle__gruppe {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+}
+.gjeldfri-toggle__knapp {
+  padding: 0.55rem 0.5rem;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gjeldfri-toggle__knapp:hover {
+  border-color: var(--primary);
+}
+.gjeldfri-toggle__knapp--aktiv {
+  border-color: var(--primary);
+  background: rgba(26, 107, 74, 0.1);
+  color: var(--primary);
+  font-weight: 600;
+}
+
 .type-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

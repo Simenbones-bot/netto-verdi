@@ -27,6 +27,7 @@ export default function SimuleringGraf({
   gjeldsAndel = 0.35,
   hendelser = [],
   onHendelserChange,
+  etterGjeldfri = 'aksjer',
 }) {
   const [modalApen, setModalApen] = useState(false)
   const [redigerer, setRedigerer] = useState(null)
@@ -39,7 +40,8 @@ export default function SimuleringGraf({
       antagelser,
       aksjeAndel,
       gjeldsAndel,
-      hendelser
+      hendelser,
+      etterGjeldfri
     )
     const start = datapunkter[0]
     const startBoliglan = (gjeld.boliglan || []).reduce(
@@ -52,7 +54,7 @@ export default function SimuleringGraf({
       boligEgenkapital: Math.max(0, r.boligverdi - r.totalGjeld * boligLanAndel),
     }))
     return { data: beriket, varsler }
-  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser])
+  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri])
 
   const sluttFormue = data[data.length - 1]?.nettoFormue ?? 0
   const startFormue = data[0]?.nettoFormue ?? 0
