@@ -1,7 +1,7 @@
 import { Plus, X, Users } from 'lucide-react'
 import BarnListe from './BarnListe.jsx'
 import SkattKalkulator from './SkattKalkulator.jsx'
-import { beregnSIFO } from '../../utils/sifo.js'
+import { beregnSIFO, beregnBarnetrygd } from '../../utils/sifo.js'
 import { beregnHusholdningSkatt } from '../../utils/skatt.js'
 import { formatKr, uid } from '../../utils/format.js'
 
@@ -55,7 +55,9 @@ export default function HusholdningForm({ husholdning, onChange }) {
     husholdning.person1?.bruttoInntekt,
     husholdning.person2?.bruttoInntekt
   )
-  const nettoMaaned = skatt.totalNetto / 12
+  const nettoLonnMaaned = skatt.totalNetto / 12
+  const barnetrygd = beregnBarnetrygd(husholdning.barn || [])
+  const nettoMaaned = nettoLonnMaaned + barnetrygd.total
   const fasteSum = (husholdning.andreFasteKostnader || []).reduce(
     (s, k) => s + (Number(k.belop) || 0),
     0
@@ -120,6 +122,31 @@ export default function HusholdningForm({ husholdning, onChange }) {
 
       <div className="card">
         <BarnListe barn={husholdning.barn || []} onChange={settBarn} />
+        {barnetrygd.total > 0 && (
+          <>
+            <hr className="divider" />
+            <h3>Barnetrygd</h3>
+            <p className="helper-text" style={{ marginBottom: '0.5rem' }}>
+              Skattefri ytelse fra NAV. Legges automatisk til som inntekt og
+              justeres med lønnsvekst i simuleringen.
+            </p>
+            <div className="summary">
+              {barnetrygd.detaljer.map((b, i) => (
+                <div key={i} className="summary__row">
+                  <span>
+                    Barn {i + 1} ({b.alder} år —{' '}
+                    {b.alder < 6 ? 'forhøyet sats' : 'ordinær sats'})
+                  </span>
+                  <span className="value-pos">+{formatKr(b.belop)}</span>
+                </div>
+              ))}
+              <div className="summary__row summary__row--big">
+                <span>Barnetrygd per måned</span>
+                <span className="value-pos">+{formatKr(barnetrygd.total)}</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <SkattKalkulator husholdning={husholdning} />
@@ -239,7 +266,17 @@ export default function HusholdningForm({ husholdning, onChange }) {
             <span className="value-neg">{formatKr(skatt.totalSkatt)}</span>
           </div>
           <div className="summary__row">
-            <span>Netto inntekt per måned</span>
+            <span>Netto lønn per måned</span>
+            <span className="value-pos">{formatKr(nettoLonnMaaned)}</span>
+          </div>
+          {barnetrygd.total > 0 && (
+            <div className="summary__row">
+              <span>Barnetrygd per måned ({barnetrygd.detaljer.length} barn)</span>
+              <span className="value-pos">+{formatKr(barnetrygd.total)}</span>
+            </div>
+          )}
+          <div className="summary__row">
+            <span>Sum inntekt per måned</span>
             <span className="value-pos">{formatKr(nettoMaaned)}</span>
           </div>
           <div className="summary__row">

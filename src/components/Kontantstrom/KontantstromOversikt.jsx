@@ -64,8 +64,14 @@ export default function KontantstromOversikt({ husholdning, gjeld }) {
         <div className="summary">
           <div className="summary__row">
             <span>Netto lønn (begge personer)</span>
-            <span className="value-pos">{formatKr(k.nettoMaaned)}</span>
+            <span className="value-pos">{formatKr(k.nettoLonnMaaned)}</span>
           </div>
+          {k.barnetrygd > 0 && (
+            <div className="summary__row">
+              <span>Barnetrygd</span>
+              <span className="value-pos">+{formatKr(k.barnetrygd)}</span>
+            </div>
+          )}
           <div className="summary__row">
             <span>Terminbeløp på alle lån</span>
             <span className="value-neg">−{formatKr(k.terminer)}</span>

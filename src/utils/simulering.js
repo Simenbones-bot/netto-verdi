@@ -1,5 +1,5 @@
 import { beregnHusholdningSkatt } from './skatt.js'
-import { beregnSIFO } from './sifo.js'
+import { beregnSIFO, beregnBarnetrygd } from './sifo.js'
 
 function terminbelop(restgjeld, arligRente, lopetidAr) {
   const r = (Number(arligRente) || 0) / 100 / 12
@@ -116,6 +116,7 @@ export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser) {
   let lonn2 = Number(husholdning.person2?.bruttoInntekt) || 0
   let sifo = gjeldendeSIFO(husholdning)
   let faste = sumFasteKostnader(husholdning)
+  let barnetrygd = beregnBarnetrygd(husholdning.barn || []).total
 
   let boligverdi = (eiendeler.boliger || []).reduce(
     (s, b) => s + (Number(b.verdi) || 0),
@@ -168,7 +169,7 @@ export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser) {
   for (let i = 1; i <= ar; i++) {
     // Beregn årets kontantstrøm med startverdier for året
     const skatt = beregnHusholdningSkatt(lonn1, lonn2)
-    const nettoArlig = skatt.totalNetto
+    const nettoArlig = skatt.totalNetto + barnetrygd * 12
     const aarligeTerminer = lan.reduce(
       (s, l) =>
         s + (l.restgjeld > 0 ? terminbelop(l.restgjeld, l.rente, l.lopetidAr) * 12 : 0),
@@ -200,6 +201,7 @@ export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser) {
     // Juster lønn og kostnader for neste år
     lonn1 *= 1 + vekstLonn
     lonn2 *= 1 + vekstLonn
+    barnetrygd *= 1 + vekstLonn
     sifo *= 1 + inflasjon
     faste *= 1 + inflasjon
 
@@ -214,7 +216,9 @@ export function oppsummerKontantstrom(husholdning, gjeld) {
     husholdning.person1?.bruttoInntekt,
     husholdning.person2?.bruttoInntekt
   )
-  const nettoMaaned = skatt.totalNetto / 12
+  const nettoLonnMaaned = skatt.totalNetto / 12
+  const barnetrygd = beregnBarnetrygd(husholdning.barn || []).total
+  const nettoMaaned = nettoLonnMaaned + barnetrygd
   const sifo = gjeldendeSIFO(husholdning)
   const faste = sumFasteKostnader(husholdning)
   const terminer = totalTerminBelopPerMaaned(gjeld)
@@ -222,6 +226,8 @@ export function oppsummerKontantstrom(husholdning, gjeld) {
   const overskuddMaaned = nettoMaaned - utMaaned
 
   return {
+    nettoLonnMaaned,
+    barnetrygd,
     nettoMaaned,
     sifo,
     faste,
