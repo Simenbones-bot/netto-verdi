@@ -1,6 +1,7 @@
 import { Plus, X, Users } from 'lucide-react'
 import BarnListe from './BarnListe.jsx'
 import SkattKalkulator from './SkattKalkulator.jsx'
+import SIFODetaljer from './SIFODetaljer.jsx'
 import TallInput from '../shared/TallInput.jsx'
 import { beregnSIFO, beregnBarnetrygd } from '../../utils/sifo.js'
 import { beregnHusholdningSkatt } from '../../utils/skatt.js'
@@ -167,6 +168,9 @@ export default function HusholdningForm({ husholdning, onChange }) {
           </div>
         </div>
 
+        <SIFODetaljer antallVoksne={antallVoksne} barn={husholdning.barn || []} />
+
+        <hr className="divider" />
         <label className="checkbox">
           <input
             type="checkbox"
