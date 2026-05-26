@@ -502,6 +502,109 @@ input, select {
   flex-wrap: wrap;
 }
 
+/* Slider */
+.sparkraft-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--val, 70%),
+    var(--border) var(--val, 70%),
+    var(--border) 100%
+  );
+  outline: none;
+  cursor: pointer;
+  margin: 0.6rem 0;
+}
+
+.sparkraft-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.sparkraft-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 3px solid white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.sparkraft-slider:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fordeling-bar {
+  display: flex;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 0.5rem 0 0.75rem;
+}
+
+.fordeling-bar__aksjer {
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: width 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.fordeling-bar__forbruk {
+  background: #aab8b0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: width 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.fordeling-rader {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.fordeling-rad {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.fordeling-rad__dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 0.4rem;
+  flex-shrink: 0;
+}
+
 @media (max-width: 500px) {
   .main { padding: 0.75rem; }
   .header { padding: 0.65rem 0.75rem; }

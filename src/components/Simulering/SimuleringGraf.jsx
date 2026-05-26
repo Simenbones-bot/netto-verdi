@@ -18,9 +18,10 @@ export default function SimuleringGraf({
   eiendeler,
   gjeld,
   antagelser,
+  aksjeAndel = 0.7,
 }) {
   const data = useMemo(() => {
-    const rader = kjorSimulering(husholdning, eiendeler, gjeld, antagelser)
+    const rader = kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel)
     // Beregn boligegenkapital = boligverdi - boliglån (estimat) per år
     // Vi har bare totalGjeld, så estimerer boliglån som andel av total gjeld ved start
     const start = rader[0]

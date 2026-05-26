@@ -86,6 +86,7 @@ export default function FinansiellHelse({
   eiendeler,
   gjeld,
   antagelser,
+  aksjeAndel = 0.7,
 }) {
   const data = useMemo(() => {
     const k = oppsummerKontantstrom(husholdning, gjeld)
@@ -94,7 +95,7 @@ export default function FinansiellHelse({
       husholdning.person1?.bruttoInntekt,
       husholdning.person2?.bruttoInntekt
     )
-    const sim = kjorSimulering(husholdning, eiendeler, gjeld, antagelser)
+    const sim = kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel)
     const start = sim[0].nettoFormue
     const slutt = sim[sim.length - 1].nettoFormue
 
@@ -106,7 +107,7 @@ export default function FinansiellHelse({
     const samletScore = Math.round(v1.score * 0.4 + v2.score * 0.3 + v3.score * 0.3)
 
     return { v1, v2, v3, samletScore, start, slutt }
-  }, [husholdning, eiendeler, gjeld, antagelser])
+  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel])
 
   const { v1, v2, v3, samletScore } = data
 

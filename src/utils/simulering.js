@@ -107,7 +107,7 @@ function nedbetalEttAr(lan) {
   }
 }
 
-export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser) {
+export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser, aksjeAndel = 0.7) {
   const ar = 15
   const resultat = []
 
@@ -191,9 +191,11 @@ export function kjorSimulering(husholdning, eiendeler, gjeld, antagelser) {
         : { restgjeld: 0, lopetidAr: 0, betalt: 0 }
     )
 
-    // Reinvester overskudd i aksjer
+    // Reinvester andel av overskudd i aksjer; resten er forbruk
     if (aarligOverskudd > 0) {
-      aksjer += aarligOverskudd
+      const andel = Math.max(0, Math.min(1, Number(aksjeAndel) || 0))
+      aksjer += aarligOverskudd * andel
+      // (1 - andel) er forbruk og bygger ikke kapital
     } else {
       bank += aarligOverskudd // trekk fra bank ved underskudd
     }

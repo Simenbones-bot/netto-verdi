@@ -2,7 +2,99 @@ import { ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Sparkles } from 'lucide
 import { oppsummerKontantstrom } from '../../utils/simulering.js'
 import { formatKr, formatProsent } from '../../utils/format.js'
 
-export default function KontantstromOversikt({ husholdning, gjeld }) {
+function tusen(tall) {
+  return Math.round(tall).toLocaleString('nb-NO').replace(/,/g, ' ')
+}
+
+function SparkraftSlider({ overskudd, aksjeProsent, onEndring }) {
+  const harOverskudd = overskudd > 0
+  const forbrukProsent = 100 - aksjeProsent
+  const aksjeKr = harOverskudd ? overskudd * (aksjeProsent / 100) : 0
+  const forbrukKr = harOverskudd ? overskudd * (forbrukProsent / 100) : 0
+
+  return (
+    <div style={{ marginTop: '1rem' }}>
+      <h3 style={{ marginBottom: '0.5rem' }}>Fordeling av månedlig overskudd</h3>
+
+      {!harOverskudd ? (
+        <p
+          style={{
+            color: 'var(--text-muted)',
+            fontStyle: 'italic',
+            fontSize: '0.9rem',
+            padding: '0.6rem',
+            background: 'var(--bg)',
+            borderRadius: 8,
+            border: '1px solid var(--border)',
+          }}
+        >
+          Ingen overskudd å fordele
+        </p>
+      ) : null}
+
+      <input
+        type="range"
+        className="sparkraft-slider"
+        min={0}
+        max={100}
+        step={1}
+        value={aksjeProsent}
+        disabled={!harOverskudd}
+        style={{ '--val': `${aksjeProsent}%` }}
+        onChange={(e) => onEndring(Number(e.target.value))}
+      />
+
+      <div className="fordeling-bar" aria-hidden="true">
+        <div
+          className="fordeling-bar__aksjer"
+          style={{ width: `${aksjeProsent}%` }}
+        >
+          {aksjeProsent >= 15 ? `${aksjeProsent}% aksjer` : ''}
+        </div>
+        <div
+          className="fordeling-bar__forbruk"
+          style={{ width: `${forbrukProsent}%` }}
+        >
+          {forbrukProsent >= 15 ? `${forbrukProsent}% forbruk` : ''}
+        </div>
+      </div>
+
+      <div className="fordeling-rader">
+        <div className="fordeling-rad">
+          <span>
+            <span
+              className="fordeling-rad__dot"
+              style={{ background: 'var(--primary)' }}
+            />
+            Aksjesparig ({aksjeProsent}%)
+          </span>
+          <strong>
+            {harOverskudd ? `${tusen(aksjeKr)} kr/mnd` : '–'}
+          </strong>
+        </div>
+        <div className="fordeling-rad">
+          <span>
+            <span
+              className="fordeling-rad__dot"
+              style={{ background: '#aab8b0' }}
+            />
+            Annet forbruk ({forbrukProsent}%)
+          </span>
+          <strong>
+            {harOverskudd ? `${tusen(forbrukKr)} kr/mnd` : '–'}
+          </strong>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function KontantstromOversikt({
+  husholdning,
+  gjeld,
+  aksjeProsent,
+  onAksjeProsentChange,
+}) {
   const k = oppsummerKontantstrom(husholdning, gjeld)
   const pos = k.overskuddMaaned >= 0
 
@@ -96,7 +188,7 @@ export default function KontantstromOversikt({ husholdning, gjeld }) {
       <div className="card">
         <div className="card__title">
           <Sparkles size={20} color="var(--primary-light)" />
-          <h3>Årlig oversikt & sparkraft</h3>
+          <h3>Årlig oversikt &amp; sparkraft</h3>
         </div>
         <div className="stat-grid">
           <div className="stat">
@@ -113,6 +205,12 @@ export default function KontantstromOversikt({ husholdning, gjeld }) {
             <div className="stat__sub">av netto inntekt</div>
           </div>
         </div>
+
+        <SparkraftSlider
+          overskudd={k.overskuddMaaned}
+          aksjeProsent={aksjeProsent}
+          onEndring={onAksjeProsentChange}
+        />
       </div>
     </>
   )

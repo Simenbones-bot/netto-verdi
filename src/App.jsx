@@ -9,7 +9,7 @@ import KontantstromOversikt from './components/Kontantstrom/KontantstromOversikt
 import SimuleringGraf from './components/Simulering/SimuleringGraf.jsx'
 import SimuleringInnstillinger from './components/Simulering/SimuleringInnstillinger.jsx'
 import FinansiellHelse from './components/Helse/FinansiellHelse.jsx'
-import { hentData, lagreData } from './utils/lagring.js'
+import { hentData, lagreData, hentSparkraftFordeling, lagreSparkraftFordeling } from './utils/lagring.js'
 
 const initialState = {
   husholdning: {
@@ -66,10 +66,16 @@ const FANER = [
 export default function App() {
   const [state, setState] = useState(() => mergeWithDefaults(hentData()))
   const [fane, setFane] = useState('husholdning')
+  const [aksjeProsent, setAksjeProsent] = useState(() => hentSparkraftFordeling())
 
   useEffect(() => {
     lagreData(state)
   }, [state])
+
+  function oppdaterAksjeProsent(prosent) {
+    lagreSparkraftFordeling(prosent)
+    setAksjeProsent(prosent)
+  }
 
   const oppdater = useMemo(
     () => ({
@@ -80,6 +86,8 @@ export default function App() {
     }),
     []
   )
+
+  const aksjeAndel = aksjeProsent / 100
 
   return (
     <div className="app">
@@ -110,6 +118,8 @@ export default function App() {
           <KontantstromOversikt
             husholdning={state.husholdning}
             gjeld={state.gjeld}
+            aksjeProsent={aksjeProsent}
+            onAksjeProsentChange={oppdaterAksjeProsent}
           />
         )}
         {fane === 'simulering' && (
@@ -123,6 +133,7 @@ export default function App() {
               eiendeler={state.eiendeler}
               gjeld={state.gjeld}
               antagelser={state.antagelser}
+              aksjeAndel={aksjeAndel}
             />
           </>
         )}
@@ -132,6 +143,7 @@ export default function App() {
             eiendeler={state.eiendeler}
             gjeld={state.gjeld}
             antagelser={state.antagelser}
+            aksjeAndel={aksjeAndel}
           />
         )}
       </main>

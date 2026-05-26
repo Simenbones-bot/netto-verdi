@@ -20,3 +20,14 @@ export function hentData() {
 export function slettData() {
   localStorage.removeItem(LAGRING_NOKKEL)
 }
+
+const SPARKRAFT_NOKKEL = 'sparkraft-fordeling'
+
+export function lagreSparkraftFordeling(aksjeProsentInt) {
+  localStorage.setItem(SPARKRAFT_NOKKEL, String(aksjeProsentInt))
+}
+
+export function hentSparkraftFordeling() {
+  const lagret = localStorage.getItem(SPARKRAFT_NOKKEL)
+  return lagret ? parseInt(lagret, 10) : 70
+}
