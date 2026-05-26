@@ -1,6 +1,7 @@
 import { Plus, X, Users } from 'lucide-react'
 import BarnListe from './BarnListe.jsx'
 import SkattKalkulator from './SkattKalkulator.jsx'
+import TallInput from '../shared/TallInput.jsx'
 import { beregnSIFO, beregnBarnetrygd } from '../../utils/sifo.js'
 import { beregnHusholdningSkatt } from '../../utils/skatt.js'
 import { formatKr, uid } from '../../utils/format.js'
@@ -83,13 +84,10 @@ export default function HusholdningForm({ husholdning, onChange }) {
           </div>
           <div className="field">
             <label>Bruttoinntekt per år</label>
-            <input
-              type="number"
-              min="0"
+            <TallInput
               value={husholdning.person1?.bruttoInntekt || 0}
-              onChange={(e) =>
-                settPerson('person1', 'bruttoInntekt', Number(e.target.value))
-              }
+              onChange={(num) => settPerson('person1', 'bruttoInntekt', num)}
+              placeholder="F.eks. 650 000"
             />
           </div>
         </div>
@@ -108,13 +106,10 @@ export default function HusholdningForm({ husholdning, onChange }) {
           </div>
           <div className="field">
             <label>Bruttoinntekt per år (kan være 0)</label>
-            <input
-              type="number"
-              min="0"
+            <TallInput
               value={husholdning.person2?.bruttoInntekt || 0}
-              onChange={(e) =>
-                settPerson('person2', 'bruttoInntekt', Number(e.target.value))
-              }
+              onChange={(num) => settPerson('person2', 'bruttoInntekt', num)}
+              placeholder="F.eks. 550 000"
             />
           </div>
         </div>
@@ -185,14 +180,12 @@ export default function HusholdningForm({ husholdning, onChange }) {
         {husholdning.sifoOverstyr && (
           <div className="field" style={{ marginTop: '0.5rem' }}>
             <label>Egen SIFO per måned (kr)</label>
-            <input
-              type="number"
-              min="0"
+            <TallInput
               value={husholdning.sifoManuell || 0}
-              onChange={(e) =>
+              onChange={(num) =>
                 onChange({
                   ...husholdning,
-                  sifoManuell: Number(e.target.value),
+                  sifoManuell: num,
                 })
               }
             />
@@ -232,11 +225,9 @@ export default function HusholdningForm({ husholdning, onChange }) {
                 </div>
                 <div className="field">
                   <label>Beløp per måned</label>
-                  <input
-                    type="number"
-                    min="0"
+                  <TallInput
                     value={k.belop}
-                    onChange={(e) => oppdaterKostnad(k.id, 'belop', e.target.value)}
+                    onChange={(num) => oppdaterKostnad(k.id, 'belop', num)}
                   />
                 </div>
               </div>

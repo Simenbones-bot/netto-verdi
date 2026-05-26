@@ -1,4 +1,5 @@
 import { Plus, X, Home, Car, GraduationCap, CreditCard, Banknote } from 'lucide-react'
+import TallInput from '../shared/TallInput.jsx'
 import { formatKr, uid } from '../../utils/format.js'
 import { beregnTerminbelop } from '../../utils/simulering.js'
 
@@ -75,11 +76,10 @@ function LanListe({
                 </div>
                 <div className="field">
                   <label>Restgjeld (kr)</label>
-                  <input
-                    type="number"
-                    min="0"
+                  <TallInput
                     value={it.restgjeld}
-                    onChange={(e) => oppdater(it.id, 'restgjeld', e.target.value)}
+                    onChange={(num) => oppdater(it.id, 'restgjeld', num)}
+                    placeholder="F.eks. 3 500 000"
                   />
                 </div>
               </div>

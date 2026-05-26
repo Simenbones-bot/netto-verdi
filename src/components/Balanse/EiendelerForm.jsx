@@ -1,4 +1,5 @@
 import { Plus, X, Home, Car, LineChart, PiggyBank, Wallet, Boxes } from 'lucide-react'
+import TallInput from '../shared/TallInput.jsx'
 import { formatKr, uid } from '../../utils/format.js'
 
 function Liste({ tittel, ikon: Ikon, beskrivelseLabel, items, onChange }) {
@@ -46,11 +47,10 @@ function Liste({ tittel, ikon: Ikon, beskrivelseLabel, items, onChange }) {
               </div>
               <div className="field">
                 <label>Verdi (kr)</label>
-                <input
-                  type="number"
-                  min="0"
+                <TallInput
                   value={it.verdi}
-                  onChange={(e) => oppdater(it.id, 'verdi', e.target.value)}
+                  onChange={(num) => oppdater(it.id, 'verdi', num)}
+                  placeholder="F.eks. 4 500 000"
                 />
               </div>
             </div>
@@ -77,11 +77,10 @@ function Tall({ tittel, ikon: Ikon, verdi, onChange, hjelpetekst }) {
       </div>
       <div className="field">
         <label>Saldo (kr)</label>
-        <input
-          type="number"
-          min="0"
+        <TallInput
           value={verdi || 0}
-          onChange={(e) => onChange(Number(e.target.value))}
+          onChange={onChange}
+          placeholder="0"
         />
         {hjelpetekst && <span className="helper-text">{hjelpetekst}</span>}
       </div>
