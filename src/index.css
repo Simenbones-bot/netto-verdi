@@ -502,6 +502,57 @@ input, select {
   flex-wrap: wrap;
 }
 
+/* Pensjon-knapper inline i helsekort */
+.pensjon-valg {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.pensjon-btn {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pensjon-btn:hover { border-color: var(--primary); color: var(--primary); }
+.pensjon-btn--ja.pensjon-btn--aktiv {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+.pensjon-btn--nei.pensjon-btn--aktiv {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+}
+
+/* Forsikring-sjekkliste inline */
+.forsikring-liste {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem 1rem;
+  margin-top: 0.6rem;
+}
+.forsikring-liste label {
+  font-size: 0.83rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  color: var(--text);
+}
+
+@media (max-width: 420px) {
+  .forsikring-liste { grid-template-columns: 1fr; }
+}
+
 /* Slider */
 .sparkraft-slider {
   width: 100%;

@@ -23,6 +23,24 @@ export function slettData() {
 
 const SPARKRAFT_NOKKEL = 'sparkraft-fordeling'
 
+export function lagrePensjonStatus(aktiv) {
+  localStorage.setItem('pensjon-sparing-aktiv', JSON.stringify(aktiv))
+}
+export function hentPensjonStatus() {
+  const v = localStorage.getItem('pensjon-sparing-aktiv')
+  return v === null ? null : JSON.parse(v)
+}
+
+export function lagreForsikring(obj) {
+  localStorage.setItem('forsikring-sjekkliste', JSON.stringify(obj))
+}
+export function hentForsikring() {
+  const v = localStorage.getItem('forsikring-sjekkliste')
+  return v
+    ? JSON.parse(v)
+    : { innbo: false, liv: false, ufore: false, reise: false }
+}
+
 export function lagreSparkraftFordeling(aksjeProsentInt) {
   localStorage.setItem(SPARKRAFT_NOKKEL, String(aksjeProsentInt))
 }
