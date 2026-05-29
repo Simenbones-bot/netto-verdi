@@ -99,6 +99,57 @@ input, select {
   color: var(--text-muted);
 }
 
+.header__handlinger {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+.header__knapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.header__knapp:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.header__melding {
+  position: absolute;
+  top: 100%;
+  right: 1rem;
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+}
+.header__melding--ok {
+  background: rgba(39, 174, 96, 0.12);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+.header__melding--feil {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+.header__melding--info {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
 .nav {
   position: sticky;
   top: 56px;
@@ -871,6 +922,36 @@ input, select {
   cursor: pointer;
 }
 
+.kr-modus {
+  display: inline-flex;
+  gap: 0.3rem;
+  padding: 0.25rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  margin-bottom: 1rem;
+}
+.kr-modus__knapp {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.kr-modus__knapp:hover {
+  color: var(--text);
+}
+.kr-modus__knapp--aktiv {
+  background: var(--surface);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
 .okonomi-tabell-wrap {
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -1056,6 +1137,8 @@ input, select {
   .to-slidere { grid-template-columns: 1fr; }
   .main { padding: 0.75rem; }
   .header { padding: 0.65rem 0.75rem; }
+  .header__knapp-tekst { display: none; }
+  .header__knapp { padding: 0.4rem 0.55rem; }
   .nav { top: 52px; }
   .nav__btn { font-size: 0.75rem; min-width: 64px; padding: 0.75rem 0.4rem; }
   .header__subtitle { display: none; }

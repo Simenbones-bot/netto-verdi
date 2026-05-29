@@ -32,6 +32,7 @@ export default function SimuleringGraf({
 }) {
   const [modalApen, setModalApen] = useState(false)
   const [redigerer, setRedigerer] = useState(null)
+  const [visningsmodus, setVisningsmodus] = useState('nominell')
 
   const { data, varsler, aarligeRader } = useMemo(() => {
     const { datapunkter, varsler, aarligeRader } = kjorSimulering(
@@ -50,12 +51,39 @@ export default function SimuleringGraf({
       0
     )
     const boligLanAndel = start.totalGjeld > 0 ? startBoliglan / start.totalGjeld : 0
-    const beriket = datapunkter.map((r) => ({
-      ...r,
-      boligEgenkapital: Math.max(0, r.boligverdi - r.totalGjeld * boligLanAndel),
-    }))
-    return { data: beriket, varsler, aarligeRader }
-  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri])
+
+    // Reell visning: deflater fremtidige kroner til dagens kjøpekraft
+    const infl = (Number(antagelser.inflasjon) || 0) / 100
+    const reell = visningsmodus === 'reell' && infl > 0
+    const KR_FELT_PUNKT = [
+      'boligverdi', 'bilverdi', 'aksjerFond', 'bankinnskudd',
+      'totalEiendeler', 'totalGjeld', 'nettoFormue',
+    ]
+    const KR_FELT_RAD = [
+      'inntekt', 'sifo', 'faste', 'terminer', 'overskudd', 'tilAksjer',
+      'tilGjeld', 'tilGjeldfri', 'tilBank', 'tilForbruk', 'underskuddBank',
+      'restgjeld',
+    ]
+    function deflater(rad, felter) {
+      if (!reell) return rad
+      const faktor = Math.pow(1 + infl, rad.ar)
+      const ny = { ...rad }
+      for (const f of felter) {
+        if (typeof ny[f] === 'number') ny[f] = Math.round(ny[f] / faktor)
+      }
+      return ny
+    }
+
+    const beriket = datapunkter.map((r) => {
+      const d = deflater(r, KR_FELT_PUNKT)
+      return {
+        ...d,
+        boligEgenkapital: Math.max(0, d.boligverdi - d.totalGjeld * boligLanAndel),
+      }
+    })
+    const raderUt = aarligeRader.map((r) => deflater(r, KR_FELT_RAD))
+    return { data: beriket, varsler, aarligeRader: raderUt }
+  }, [husholdning, eiendeler, gjeld, antagelser, aksjeAndel, gjeldsAndel, hendelser, etterGjeldfri, visningsmodus])
 
   const sluttFormue = data[data.length - 1]?.nettoFormue ?? 0
   const startFormue = data[0]?.nettoFormue ?? 0
@@ -111,6 +139,28 @@ export default function SimuleringGraf({
         <div className="card__title">
           <TrendingUp size={20} color="var(--primary)" />
           <h2>15-års simulering</h2>
+        </div>
+
+        <div className="kr-modus" role="radiogroup" aria-label="Visning av kroner">
+          {[
+            { id: 'nominell', label: 'Nominelle kr', tittel: 'Faktiske kroner i hvert fremtidig år' },
+            { id: 'reell', label: 'Dagens kjøpekraft', tittel: 'Justert for inflasjon — verdt i dagens kroner' },
+          ].map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              role="radio"
+              aria-checked={visningsmodus === m.id}
+              title={m.tittel}
+              className={
+                'kr-modus__knapp' +
+                (visningsmodus === m.id ? ' kr-modus__knapp--aktiv' : '')
+              }
+              onClick={() => setVisningsmodus(m.id)}
+            >
+              {m.label}
+            </button>
+          ))}
         </div>
 
         {varsler.length > 0 && (
@@ -269,6 +319,16 @@ export default function SimuleringGraf({
         <p className="helper-text" style={{ marginTop: '0.5rem' }}>
           Simuleringen reinvesterer årlig overskudd i aksjer/fond og betaler ned
           lån etter annuitetsmodellen. Hendelser markeres med stiplede linjer.
+          {visningsmodus === 'reell' ? (
+            <>
+              {' '}Tallene er justert for {antagelser.inflasjon}% inflasjon og vises
+              i dagens kjøpekraft.
+            </>
+          ) : (
+            <>
+              {' '}Tallene vises i nominelle (faktiske) fremtidige kroner.
+            </>
+          )}
         </p>
       </div>
 

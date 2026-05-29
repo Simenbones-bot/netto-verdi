@@ -102,3 +102,41 @@ export function hentHendelser() {
     return []
   }
 }
+
+// Alle nøkler appen lagrer i localStorage — brukes til eksport/import
+const ALLE_NOKLER = [
+  LAGRING_NOKKEL,
+  SPARKRAFT_NOKKEL,
+  FORDELING_NOKKEL,
+  ETTER_GJELDFRI_NOKKEL,
+  HENDELSER_NOKKEL,
+  'pensjon-sparing-aktiv',
+  'forsikring-sjekkliste',
+]
+
+const EKSPORT_VERSJON = 1
+
+export function eksporterData() {
+  const data = {}
+  for (const nokkel of ALLE_NOKLER) {
+    const v = localStorage.getItem(nokkel)
+    if (v !== null) data[nokkel] = v
+  }
+  return {
+    _format: 'netto-formue',
+    _versjon: EKSPORT_VERSJON,
+    _eksportert: new Date().toISOString(),
+    data,
+  }
+}
+
+export function importerData(objekt) {
+  if (!objekt || objekt._format !== 'netto-formue' || !objekt.data) {
+    throw new Error('Ugyldig fil – dette er ikke en gyldig Netto formue-backup.')
+  }
+  for (const nokkel of ALLE_NOKLER) {
+    if (Object.prototype.hasOwnProperty.call(objekt.data, nokkel)) {
+      localStorage.setItem(nokkel, objekt.data[nokkel])
+    }
+  }
+}

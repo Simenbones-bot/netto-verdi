@@ -42,7 +42,7 @@ export function beregnSkattPerPerson(bruttoInntekt) {
 
   const minstefradrag = beregnMinstefradrag(brutto)
   const trinnskatt = beregnTrinnskatt(brutto)
-  const grunnlagFlat = Math.max(0, brutto - PERSONFRADRAG)
+  const grunnlagFlat = Math.max(0, brutto - minstefradrag - PERSONFRADRAG)
   const flatSkatt = grunnlagFlat * 0.22
   const trygdeavgift = brutto * TRYGDEAVGIFT_SATS
   const totalSkatt = trinnskatt + flatSkatt + trygdeavgift
