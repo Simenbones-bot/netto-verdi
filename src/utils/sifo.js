@@ -179,13 +179,14 @@ export function beregnSIFO(antallVoksne, barn = []) {
   }
 }
 
-// Barnetrygd-satser (NOK per måned) — 2026-satser, skattefri ytelse
-export const BARNETRYGD_UNDER_6 = 2064
-export const BARNETRYGD_6_TIL_17 = 1766
+// Barnetrygd — 2026-satser (NOK per måned), skattefri ytelse.
+// Fra 2026 er det én flat sats for alle barn 0–17 år.
+// Utvidet barnetrygd (enslige forsørgere) og småbarnstillegg er ikke modellert.
+export const BARNETRYGD_PER_BARN = 2012
 
 function barnetrygdSats(alder) {
-  const a = Math.max(0, Math.min(17, Number(alder) || 0))
-  return a < 6 ? BARNETRYGD_UNDER_6 : BARNETRYGD_6_TIL_17
+  const a = Number(alder) || 0
+  return a >= 0 && a <= 17 ? BARNETRYGD_PER_BARN : 0
 }
 
 export function beregnBarnetrygd(barn = []) {
