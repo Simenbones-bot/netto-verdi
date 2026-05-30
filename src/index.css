@@ -922,6 +922,226 @@ input, select {
   cursor: pointer;
 }
 
+.budsjett-styring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 1rem 0 0.5rem;
+}
+.budsjett-styring__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.budsjett-aar-velger {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.budsjett-aar-velger__knapp {
+  padding: 0.4rem 0.7rem;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.budsjett-aar-velger__knapp:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.budsjett-aar-velger__knapp--aktiv {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.budsjett-gjeldfri {
+  margin-top: 1rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid var(--success);
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.budsjett-kort-rad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.budsjett-kort {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 0;
+}
+.budsjett-kort__topp {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.budsjett-kort__ar {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+.budsjett-kort__merke {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  background: rgba(26, 107, 74, 0.12);
+  color: var(--primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.budsjett-kort__merke--diff {
+  background: var(--bg);
+  color: var(--text-muted);
+}
+.budsjett-kort__hovedtall {
+  padding: 0.7rem 0.85rem;
+  background: var(--bg);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.budsjett-kort__hovedtall-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.budsjett-kort__hovedtall-verdi {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.budsjett-stable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.budsjett-stable__rad {
+  display: grid;
+  grid-template-columns: 12px 70px 1fr auto;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+}
+.budsjett-stable__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.budsjett-stable__label {
+  color: var(--text-muted);
+}
+.budsjett-stable__bar {
+  height: 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.budsjett-stable__bar-fyll {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.2s;
+}
+.budsjett-stable__verdi {
+  font-weight: 600;
+  color: var(--text);
+  min-width: 65px;
+  text-align: right;
+}
+
+.budsjett-underskudd {
+  padding: 0.55rem 0.75rem;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.budsjett-noekkel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+.budsjett-noekkel__label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.budsjett-noekkel__verdi {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.budsjett-endring {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.budsjett-endringer {
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border);
+  font-size: 0.82rem;
+}
+.budsjett-endringer__tittel {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+.budsjett-endringer__rad {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2rem 0;
+  color: var(--text);
+}
+
+.budsjett-trend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.budsjett-trend__rad {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.7rem;
+  padding: 0.5rem 0.7rem;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 0.86rem;
+}
+.budsjett-trend__navn {
+  font-weight: 600;
+  color: var(--text);
+}
+.budsjett-trend__forklaring {
+  color: var(--text-muted);
+}
+
 .kr-modus {
   display: inline-flex;
   gap: 0.3rem;

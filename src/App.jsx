@@ -6,6 +6,7 @@ import EiendelerForm from './components/Balanse/EiendelerForm.jsx'
 import GjeldForm from './components/Balanse/GjeldForm.jsx'
 import BalanseOversikt from './components/Balanse/BalanseOversikt.jsx'
 import KontantstromOversikt from './components/Kontantstrom/KontantstromOversikt.jsx'
+import BudsjettOversikt from './components/Budsjett/BudsjettOversikt.jsx'
 import SimuleringGraf from './components/Simulering/SimuleringGraf.jsx'
 import SimuleringInnstillinger from './components/Simulering/SimuleringInnstillinger.jsx'
 import FinansiellHelse from './components/Helse/FinansiellHelse.jsx'
@@ -68,6 +69,7 @@ const FANER = [
   { id: 'husholdning', label: 'Husholdning' },
   { id: 'balanse', label: 'Balanse' },
   { id: 'kontantstrom', label: 'Kontantstrøm' },
+  { id: 'budsjett', label: 'Budsjett' },
   { id: 'simulering', label: 'Simulering' },
   { id: 'helse', label: 'Helse' },
 ]
@@ -144,6 +146,18 @@ export default function App() {
             onFordelingChange={oppdaterFordeling}
             etterGjeldfri={etterGjeldfri}
             onEtterGjeldfriChange={oppdaterEtterGjeldfri}
+          />
+        )}
+        {fane === 'budsjett' && (
+          <BudsjettOversikt
+            husholdning={state.husholdning}
+            eiendeler={state.eiendeler}
+            gjeld={state.gjeld}
+            antagelser={state.antagelser}
+            aksjeAndel={aksjeAndel}
+            gjeldsAndel={gjeldsAndel}
+            hendelser={hendelser}
+            etterGjeldfri={etterGjeldfri}
           />
         )}
         {fane === 'simulering' && (
