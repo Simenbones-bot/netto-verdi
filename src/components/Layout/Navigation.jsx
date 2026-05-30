@@ -1,9 +1,10 @@
-import { Users, Scale, ArrowLeftRight, TrendingUp, HeartPulse } from 'lucide-react'
+import { Users, Scale, ArrowLeftRight, Calendar, TrendingUp, HeartPulse } from 'lucide-react'
 
 const IKONER = {
   husholdning: Users,
   balanse: Scale,
   kontantstrom: ArrowLeftRight,
+  budsjett: Calendar,
   simulering: TrendingUp,
   helse: HeartPulse,
 }
