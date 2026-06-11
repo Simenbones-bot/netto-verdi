@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import { TrendingUp, Plus, TriangleAlert } from 'lucide-react'
 import { kjorSimulering } from '../../utils/simulering.js'
-import { formatKr, formatKortKr } from '../../utils/format.js'
+import { formatKr, formatKortKr, arTall, arTittel } from '../../utils/format.js'
 import { hendelseFarge, hendelseLabel, kortBeskrivelse } from '../../utils/hendelser.js'
 import HendelseListe from './HendelseListe.jsx'
 import HendelseModal from './HendelseModal.jsx'
@@ -129,6 +129,7 @@ export default function SimuleringGraf({
         <div style={{ marginTop: '0.75rem' }}>
           <HendelseListe
             hendelser={hendelser}
+            antagelser={antagelser}
             onRediger={apneRediger}
             onSlett={slettHendelse}
           />
@@ -171,7 +172,7 @@ export default function SimuleringGraf({
               <ul>
                 {varsler.map((v, i) => (
                   <li key={`${v.aar}-${i}`}>
-                    År {v.aar}: −{formatKr(v.belop)}
+                    {arTittel(v.aar, antagelser)}: −{formatKr(v.belop)}
                   </li>
                 ))}
               </ul>
@@ -212,14 +213,18 @@ export default function SimuleringGraf({
               <XAxis
                 dataKey="ar"
                 stroke="var(--text-muted)"
-                tickFormatter={(v) => `${v}`}
-                label={{
-                  value: 'År',
-                  position: 'insideBottom',
-                  offset: -2,
-                  fill: 'var(--text-muted)',
-                  fontSize: 12,
-                }}
+                tickFormatter={(v) => `${arTall(v, antagelser)}`}
+                label={
+                  antagelser.visArstall
+                    ? undefined
+                    : {
+                        value: 'År',
+                        position: 'insideBottom',
+                        offset: -2,
+                        fill: 'var(--text-muted)',
+                        fontSize: 12,
+                      }
+                }
               />
               <YAxis
                 stroke="var(--text-muted)"
@@ -228,7 +233,7 @@ export default function SimuleringGraf({
               />
               <Tooltip
                 formatter={(v) => formatKr(v)}
-                labelFormatter={(l) => `År ${l}`}
+                labelFormatter={(l) => arTittel(l, antagelser)}
                 contentStyle={{
                   background: 'var(--surface)',
                   border: '1px solid var(--border)',
@@ -307,7 +312,7 @@ export default function SimuleringGraf({
                   key={h.id}
                   className="hendelse-tidslinje__ikon"
                   style={{ left: `${venstre}%` }}
-                  title={`År ${h.aar} – ${hendelseLabel(h.type)}: ${kortBeskrivelse(h)}`}
+                  title={`${arTittel(h.aar, antagelser)} – ${hendelseLabel(h.type)}: ${kortBeskrivelse(h)}`}
                 >
                   <HendelseIkon type={h.type} size={14} />
                 </span>
@@ -332,12 +337,17 @@ export default function SimuleringGraf({
         </p>
       </div>
 
-      <OkonomiOversikt rader={aarligeRader} etterGjeldfri={etterGjeldfri} />
+      <OkonomiOversikt
+        rader={aarligeRader}
+        etterGjeldfri={etterGjeldfri}
+        antagelser={antagelser}
+      />
 
       <HendelseModal
         apen={modalApen}
         init={redigerer}
         eiendeler={eiendeler}
+        antagelser={antagelser}
         onLagre={lagreHendelse}
         onLukk={() => {
           setModalApen(false)

@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import TallInput from '../shared/TallInput.jsx'
 import HendelseIkon from './HendelseIkon.jsx'
 import { HENDELSE_TYPER, hendelseLabel, nyHendelse } from '../../utils/hendelser.js'
+import { arTittel } from '../../utils/format.js'
 
 function Felt({ label, children, hint }) {
   return (
@@ -347,7 +348,7 @@ function InntektsendringFelt({ data, set }) {
   )
 }
 
-export default function HendelseModal({ apen, init, eiendeler, onLagre, onLukk }) {
+export default function HendelseModal({ apen, init, eiendeler, antagelser, onLagre, onLukk }) {
   const [data, setData] = useState(() => init || nyHendelse('boligkjop', 1))
 
   // Nullstill skjemaet når modalen åpnes (state-justering under render,
@@ -419,7 +420,10 @@ export default function HendelseModal({ apen, init, eiendeler, onLagre, onLukk }
               className="aar-slider"
               onChange={(e) => oppdater({ aar: Number(e.target.value) })}
             />
-            <div className="aar-slider__verdi">År {data.aar}</div>
+            <div className="aar-slider__verdi">
+              {arTittel(data.aar, antagelser)}
+              {antagelser?.visArstall && ` (om ${data.aar} år)`}
+            </div>
           </Felt>
 
           {data.type === 'boligkjop' && <BoligkjopFelt data={data} set={oppdater} />}

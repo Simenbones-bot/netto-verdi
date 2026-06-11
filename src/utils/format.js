@@ -40,3 +40,28 @@ export function formatKortKr(belop) {
 export function uid() {
   return Math.random().toString(36).slice(2, 10)
 }
+
+// ─── Visning av simuleringsår ─────────────────────────────────────────────────
+// Med antagelser.visArstall vises kalenderår (startAar + n) i stedet for «År n».
+
+function arStart(antagelser) {
+  return Number(antagelser?.startAar) || new Date().getFullYear()
+}
+
+/** Bare tallet: 2033 eller 7. Til akser og tabellceller. */
+export function arTall(ar, antagelser) {
+  const n = Number(ar) || 0
+  return antagelser?.visArstall ? arStart(antagelser) + n : n
+}
+
+/** Midt i en setning: «2033» eller «år 7». */
+export function arLabel(ar, antagelser) {
+  const n = Number(ar) || 0
+  return antagelser?.visArstall ? String(arStart(antagelser) + n) : `år ${n}`
+}
+
+/** Som tittel/merke: «2033» eller «År 7». */
+export function arTittel(ar, antagelser) {
+  const n = Number(ar) || 0
+  return antagelser?.visArstall ? String(arStart(antagelser) + n) : `År ${n}`
+}

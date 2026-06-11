@@ -36,6 +36,30 @@ export default function SimuleringInnstillinger({ antagelser, onChange }) {
           </div>
         ))}
       </div>
+
+      <hr className="divider" />
+      <label className="checkbox">
+        <input
+          type="checkbox"
+          checked={!!antagelser.visArstall}
+          onChange={(e) =>
+            onChange({ ...antagelser, visArstall: e.target.checked })
+          }
+        />
+        Vis kalenderår (f.eks. {(Number(antagelser.startAar) || new Date().getFullYear()) + 5}) i stedet for «År 5»
+      </label>
+      {antagelser.visArstall && (
+        <div className="field" style={{ marginTop: '0.5rem', maxWidth: 220 }}>
+          <label>Startår (= i dag)</label>
+          <input
+            type="number"
+            min="2000"
+            max="2100"
+            value={antagelser.startAar ?? new Date().getFullYear()}
+            onChange={(e) => sett('startAar', e.target.value)}
+          />
+        </div>
+      )}
     </div>
   )
 }

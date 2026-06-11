@@ -1,12 +1,12 @@
 import { Table2, TrendingDown } from 'lucide-react'
-import { formatKortKr } from '../../utils/format.js'
+import { formatKortKr, arTall, arTittel, arLabel } from '../../utils/format.js'
 
 function fmt(n) {
   if (n === 0) return '–'
   return formatKortKr(Math.round(n))
 }
 
-export default function OkonomiOversikt({ rader, etterGjeldfri }) {
+export default function OkonomiOversikt({ rader, etterGjeldfri, antagelser }) {
   if (!rader || rader.length === 0) return null
 
   const startRestgjeld = rader[0]?.restgjeld ?? 0
@@ -47,7 +47,7 @@ export default function OkonomiOversikt({ rader, etterGjeldfri }) {
             className={`stat__value ${gjeldfriAr ? 'value-pos' : ''}`}
             style={{ color: gjeldfriAr ? 'var(--success)' : undefined }}
           >
-            {gjeldfriAr ? `År ${gjeldfriAr}` : fmt(sluttRestgjeld)}
+            {gjeldfriAr ? arTittel(gjeldfriAr, antagelser) : fmt(sluttRestgjeld)}
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function OkonomiOversikt({ rader, etterGjeldfri }) {
                   className={erGjeldfri ? 'okonomi-tabell__rad--gjeldfri' : ''}
                 >
                   <td className="okonomi-tabell__ar">
-                    {r.ar}
+                    {arTall(r.ar, antagelser)}
                     {erGjeldfri && (
                       <span
                         className="okonomi-tabell__merke"
@@ -133,7 +133,7 @@ export default function OkonomiOversikt({ rader, etterGjeldfri }) {
                 style={{ verticalAlign: '-2px', marginRight: 3 }}
                 color="var(--success)"
               />
-              <strong>Du blir gjeldfri i år {gjeldfriAr}</strong> — etter det går
+              <strong>Du blir gjeldfri i {arLabel(gjeldfriAr, antagelser)}</strong> — etter det går
               "ekstra ned"-andelen til {etterGjeldfriLabel}, og terminbeløpet frigjøres
               som økt overskudd.
             </>

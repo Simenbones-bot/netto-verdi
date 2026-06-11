@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Calendar, TrendingUp, ArrowRight } from 'lucide-react'
 import { kjorSimulering } from '../../utils/simulering.js'
-import { formatKr, formatProsent } from '../../utils/format.js'
+import { formatKr, formatProsent, arTittel, arLabel } from '../../utils/format.js'
 
 const AAR_ALTERNATIVER = [1, 2, 3, 5, 7, 10, 15]
 const STANDARD_VALG = [1, 5, 10, 15]
@@ -156,7 +156,7 @@ export default function BudsjettOversikt({
                   }
                   onClick={() => toggleAar(a)}
                 >
-                  År {a}
+                  {arTittel(a, antagelser)}
                 </button>
               ))}
             </div>
@@ -191,7 +191,7 @@ export default function BudsjettOversikt({
         {gjeldfriAr && (
           <div className="budsjett-gjeldfri">
             <TrendingUp size={16} color="var(--success)" />
-            Du blir gjeldfri i år {gjeldfriAr} — etter det forsvinner terminbeløpet
+            Du blir gjeldfri i {arLabel(gjeldfriAr, antagelser)} — etter det forsvinner terminbeløpet
             og frigjør plass i månedsbudsjettet.
           </div>
         )}
@@ -204,11 +204,11 @@ export default function BudsjettOversikt({
           return (
             <div key={m.ar} className="card budsjett-kort">
               <div className="budsjett-kort__topp">
-                <div className="budsjett-kort__ar">År {m.ar}</div>
+                <div className="budsjett-kort__ar">{arTittel(m.ar, antagelser)}</div>
                 {erBasis && <div className="budsjett-kort__merke">Basis</div>}
                 {!erBasis && basis && (
                   <div className="budsjett-kort__merke budsjett-kort__merke--diff">
-                    vs. år {basis.ar}
+                    vs. {arLabel(basis.ar, antagelser)}
                   </div>
                 )}
               </div>
@@ -301,7 +301,7 @@ export default function BudsjettOversikt({
               {!erBasis && basis && (
                 <div className="budsjett-endringer">
                   <div className="budsjett-endringer__tittel">
-                    Endring siden år {basis.ar}
+                    Endring siden {arLabel(basis.ar, antagelser)}
                   </div>
                   <div className="budsjett-endringer__rad">
                     <span>Inntekt</span>
@@ -349,7 +349,7 @@ export default function BudsjettOversikt({
               <span className="budsjett-trend__navn">Terminer</span>
               <span className="budsjett-trend__forklaring">
                 Faller etterhvert som lån betales ned
-                {gjeldfriAr && ` → 0 fra år ${gjeldfriAr}`}
+                {gjeldfriAr && ` → 0 fra ${arLabel(gjeldfriAr, antagelser)}`}
               </span>
             </div>
             <div className="budsjett-trend__rad">

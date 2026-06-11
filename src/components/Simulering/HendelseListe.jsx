@@ -1,8 +1,9 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import HendelseIkon from './HendelseIkon.jsx'
 import { hendelseLabel, kortBeskrivelse } from '../../utils/hendelser.js'
+import { arTittel } from '../../utils/format.js'
 
-export default function HendelseListe({ hendelser, onRediger, onSlett }) {
+export default function HendelseListe({ hendelser, antagelser, onRediger, onSlett }) {
   if (!hendelser || hendelser.length === 0) {
     return (
       <p className="hendelse-liste__tom">
@@ -20,7 +21,7 @@ export default function HendelseListe({ hendelser, onRediger, onSlett }) {
           <span className="hendelse-rad__ikon">
             <HendelseIkon type={h.type} size={18} />
           </span>
-          <span className="hendelse-rad__aar">År {h.aar}</span>
+          <span className="hendelse-rad__aar">{arTittel(h.aar, antagelser)}</span>
           <span className="hendelse-rad__type">{hendelseLabel(h.type)}</span>
           <span className="hendelse-rad__beskrivelse">{kortBeskrivelse(h)}</span>
           <span className="hendelse-rad__handlinger">

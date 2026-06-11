@@ -22,7 +22,7 @@ import {
   oppsummerKontantstrom,
   kjorSimulering,
 } from '../../utils/simulering.js'
-import { formatKr, formatKortKr } from '../../utils/format.js'
+import { formatKr, formatKortKr, arTall, arTittel } from '../../utils/format.js'
 
 const SNARVEIER = [
   { id: 'husholdning', label: 'Husholdning', tekst: 'Inntekt, barn og skatt', Ikon: Users },
@@ -136,10 +136,13 @@ export default function OversiktDashboard({
             positiv={k.sparkraftProsent >= 0}
           />
           {gjeldfriAr !== null && (
-            <HeroChip label="Gjeldfri om" verdi={`${gjeldfriAr} år`} />
+            <HeroChip
+              label={antagelser?.visArstall ? 'Gjeldfri i' : 'Gjeldfri om'}
+              verdi={antagelser?.visArstall ? arTittel(gjeldfriAr, antagelser) : `${gjeldfriAr} år`}
+            />
           )}
           <HeroChip
-            label="Formue om 15 år"
+            label={antagelser?.visArstall ? `Formue i ${arTall(15, antagelser)}` : 'Formue om 15 år'}
             verdi={formatKr(om15)}
             positiv={endring15 >= 0}
           />
@@ -163,7 +166,9 @@ export default function OversiktDashboard({
                 </defs>
                 <XAxis
                   dataKey="ar"
-                  tickFormatter={(v) => (v === 0 ? 'Nå' : `${v} år`)}
+                  tickFormatter={(v) =>
+                    v === 0 ? 'Nå' : antagelser?.visArstall ? `${arTall(v, antagelser)}` : `${v} år`
+                  }
                   ticks={[0, 5, 10, 15]}
                   tickLine={false}
                   axisLine={false}
@@ -172,7 +177,9 @@ export default function OversiktDashboard({
                 <YAxis hide domain={['auto', 'auto']} />
                 <Tooltip
                   formatter={(v) => [formatKr(v), 'Netto formue']}
-                  labelFormatter={(v) => (v === 0 ? 'I dag' : `Om ${v} år`)}
+                  labelFormatter={(v) =>
+                    v === 0 ? 'I dag' : antagelser?.visArstall ? arTittel(v, antagelser) : `Om ${v} år`
+                  }
                   contentStyle={{
                     background: 'var(--surface)',
                     border: '1px solid var(--border)',
@@ -191,7 +198,9 @@ export default function OversiktDashboard({
             </ResponsiveContainer>
           </div>
           <div className="dash-graf__bunn">
-            <span className="value-muted">Om 15 år</span>
+            <span className="value-muted">
+              {antagelser?.visArstall ? `I ${arTall(15, antagelser)}` : 'Om 15 år'}
+            </span>
             <span>
               <strong>{formatKortKr(om15)} kr</strong>{' '}
               <span className={endring15 >= 0 ? 'value-pos' : 'value-neg'}>

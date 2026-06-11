@@ -54,6 +54,8 @@ const initialState = {
     boliglanRente: 5.0,
     aksjeavkastning: 7.0,
     verdifallBil: 15.0,
+    visArstall: false,
+    startAar: new Date().getFullYear(),
   },
 }
 
