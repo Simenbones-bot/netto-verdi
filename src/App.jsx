@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import Header from './components/Layout/Header.jsx'
 import Navigation from './components/Layout/Navigation.jsx'
+import OversiktDashboard from './components/Oversikt/OversiktDashboard.jsx'
 import HusholdningForm from './components/Husholdning/HusholdningForm.jsx'
 import EiendelerForm from './components/Balanse/EiendelerForm.jsx'
 import GjeldForm from './components/Balanse/GjeldForm.jsx'
@@ -20,6 +21,7 @@ import {
   hentEtterGjeldfri,
   lagreEtterGjeldfri,
 } from './utils/lagring.js'
+import { oppsummerBalanse } from './utils/simulering.js'
 
 const initialState = {
   husholdning: {
@@ -66,6 +68,7 @@ function mergeWithDefaults(saved) {
 }
 
 const FANER = [
+  { id: 'oversikt', label: 'Oversikt' },
   { id: 'husholdning', label: 'Husholdning' },
   { id: 'balanse', label: 'Balanse' },
   { id: 'kontantstrom', label: 'Kontantstrøm' },
@@ -76,7 +79,7 @@ const FANER = [
 
 export default function App() {
   const [state, setState] = useState(() => mergeWithDefaults(hentData()))
-  const [fane, setFane] = useState('husholdning')
+  const [fane, setFane] = useState('oversikt')
   const [fordeling, setFordeling] = useState(() => hentFordeling())
   const [hendelser, setHendelser] = useState(() => hentHendelser())
   const [etterGjeldfri, setEtterGjeldfri] = useState(() => hentEtterGjeldfri())
@@ -113,11 +116,29 @@ export default function App() {
   const aksjeAndel = fordeling.aksjer / 100
   const gjeldsAndel = fordeling.gjeld / 100
 
+  const nettoFormue = useMemo(
+    () => oppsummerBalanse(state.eiendeler, state.gjeld).nettoFormue,
+    [state.eiendeler, state.gjeld]
+  )
+
   return (
     <div className="app">
-      <Header />
+      <Header nettoFormue={nettoFormue} />
       <Navigation faner={FANER} aktiv={fane} onVelg={setFane} />
       <main className="main">
+        {fane === 'oversikt' && (
+          <OversiktDashboard
+            husholdning={state.husholdning}
+            eiendeler={state.eiendeler}
+            gjeld={state.gjeld}
+            antagelser={state.antagelser}
+            aksjeAndel={aksjeAndel}
+            gjeldsAndel={gjeldsAndel}
+            hendelser={hendelser}
+            etterGjeldfri={etterGjeldfri}
+            onVelgFane={setFane}
+          />
+        )}
         {fane === 'husholdning' && (
           <HusholdningForm
             husholdning={state.husholdning}

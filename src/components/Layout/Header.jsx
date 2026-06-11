@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 import { Wallet, Download, Upload } from 'lucide-react'
 import { eksporterData, importerData } from '../../utils/lagring.js'
+import { formatKr } from '../../utils/format.js'
 
-export default function Header() {
+export default function Header({ nettoFormue }) {
   const filInput = useRef(null)
   const [melding, setMelding] = useState(null)
 
@@ -56,6 +57,12 @@ export default function Header() {
       <div>
         <div className="header__title">Netto formue</div>
       </div>
+      {nettoFormue !== undefined && nettoFormue !== 0 && (
+        <div className="header__formue">
+          <span className="header__formue-label">Netto formue</span>
+          <span className="header__formue-verdi">{formatKr(nettoFormue)}</span>
+        </div>
+      )}
       <div className="header__handlinger">
         <button
           type="button"

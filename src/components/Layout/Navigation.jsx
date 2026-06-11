@@ -1,6 +1,7 @@
-import { Users, Scale, ArrowLeftRight, Calendar, TrendingUp, HeartPulse } from 'lucide-react'
+import { LayoutDashboard, Users, Scale, ArrowLeftRight, Calendar, TrendingUp, HeartPulse } from 'lucide-react'
 
 const IKONER = {
+  oversikt: LayoutDashboard,
   husholdning: Users,
   balanse: Scale,
   kontantstrom: ArrowLeftRight,
