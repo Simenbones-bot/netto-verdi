@@ -1671,3 +1671,85 @@ input, select {
   .header__formue-label { font-size: 0.6rem; }
   .header__formue-verdi { font-size: 0.85rem; }
 }
+
+/* Select forkledd som knapp (f.eks. «Legg til barn» med alder-dropdown) */
+.velg-knapp {
+  position: relative;
+  cursor: pointer;
+}
+.velg-knapp__select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Barn som kompakte chips med alder-dropdown */
+.barn-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.barn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.35rem 0.3rem 0.85rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.barn-chip__navn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.barn-chip select {
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.85rem;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+.barn-chip select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+.barn-chip .btn--icon {
+  padding: 0.25rem;
+}
+
+/* Hurtigvalg-chips for vanlige oppføringer */
+.hurtigvalg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.hurtigvalg:empty { display: none; }
+.hurtigvalg__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 999px;
+  padding: 0.32rem 0.75rem;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hurtigvalg__chip:hover {
+  border-color: var(--primary);
+  border-style: solid;
+  color: var(--primary);
+  background: rgba(14, 122, 82, 0.06);
+}

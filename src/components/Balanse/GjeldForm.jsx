@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Plus, X, Home, Car, GraduationCap, CreditCard, Banknote } from 'lucide-react'
 import TallInput from '../shared/TallInput.jsx'
 import { formatKr, uid } from '../../utils/format.js'
@@ -11,11 +12,15 @@ function LanListe({
   visLopetid = true,
   beskrivelseLabel,
 }) {
+  const [sistLagtTil, setSistLagtTil] = useState(null)
+
   function leggTil() {
+    const id = uid()
+    setSistLagtTil(id)
     onChange([
       ...(items || []),
       {
-        id: uid(),
+        id,
         beskrivelse: '',
         restgjeld: 0,
         rente: 5,
@@ -71,6 +76,7 @@ function LanListe({
                   <input
                     type="text"
                     value={it.beskrivelse || ''}
+                    autoFocus={it.id === sistLagtTil}
                     onChange={(e) => oppdater(it.id, 'beskrivelse', e.target.value)}
                   />
                 </div>
@@ -88,6 +94,7 @@ function LanListe({
                   <label>Rente (%)</label>
                   <input
                     type="number"
+                    inputMode="decimal"
                     min="0"
                     step="0.1"
                     value={it.rente}
@@ -99,6 +106,7 @@ function LanListe({
                     <label>Gjenværende løpetid (år)</label>
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0"
                       step="0.5"
                       value={it.lopetidAr}

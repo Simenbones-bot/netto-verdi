@@ -1,10 +1,15 @@
+import { useState } from 'react'
 import { Plus, X, Home, Car, LineChart, PiggyBank, Wallet, Boxes } from 'lucide-react'
 import TallInput from '../shared/TallInput.jsx'
 import { formatKr, uid } from '../../utils/format.js'
 
 function Liste({ tittel, ikon: Ikon, beskrivelseLabel, items, onChange }) {
+  const [sistLagtTil, setSistLagtTil] = useState(null)
+
   function leggTil() {
-    onChange([...(items || []), { id: uid(), beskrivelse: '', verdi: 0 }])
+    const id = uid()
+    setSistLagtTil(id)
+    onChange([...(items || []), { id, beskrivelse: '', verdi: 0 }])
   }
   function oppdater(id, felt, verdi) {
     onChange(
@@ -42,6 +47,7 @@ function Liste({ tittel, ikon: Ikon, beskrivelseLabel, items, onChange }) {
                 <input
                   type="text"
                   value={it.beskrivelse}
+                  autoFocus={it.id === sistLagtTil}
                   onChange={(e) => oppdater(it.id, 'beskrivelse', e.target.value)}
                 />
               </div>

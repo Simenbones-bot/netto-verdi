@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Plus, X, Users } from 'lucide-react'
 import BarnListe from './BarnListe.jsx'
 import SkattKalkulator from './SkattKalkulator.jsx'
@@ -7,7 +8,18 @@ import { beregnSIFO, beregnBarnetrygd } from '../../utils/sifo.js'
 import { beregnHusholdningSkatt } from '../../utils/skatt.js'
 import { formatKr, uid } from '../../utils/format.js'
 
+const VANLIGE_KOSTNADER = [
+  'Strøm',
+  'Forsikring',
+  'Barnehage/SFO',
+  'Mobil/internett',
+  'Abonnementer',
+  'Transport',
+]
+
 export default function HusholdningForm({ husholdning, onChange }) {
+  const [sistLagtTil, setSistLagtTil] = useState(null)
+
   function settPerson(nokkel, felt, verdi) {
     onChange({
       ...husholdning,
@@ -23,10 +35,13 @@ export default function HusholdningForm({ husholdning, onChange }) {
     onChange({ ...husholdning, andreFasteKostnader: liste })
   }
 
-  function leggTilFastKostnad() {
+  function leggTilFastKostnad(navn = '') {
+    const id = uid()
+    // Med ferdig navn (hurtigvalg) hopper fokus rett til beløpsfeltet
+    setSistLagtTil({ id, felt: navn ? 'belop' : 'navn' })
     settFasteKostnader([
       ...(husholdning.andreFasteKostnader || []),
-      { id: uid(), navn: '', belop: 0 },
+      { id, navn, belop: 0 },
     ])
   }
 
@@ -200,16 +215,30 @@ export default function HusholdningForm({ husholdning, onChange }) {
           <button
             className="btn btn--ghost btn--small"
             style={{ marginLeft: 'auto' }}
-            onClick={leggTilFastKostnad}
+            onClick={() => leggTilFastKostnad()}
           >
             <Plus size={14} /> Legg til
           </button>
         </div>
-        <p className="helper-text" style={{ marginBottom: '0.5rem' }}>
-          F.eks. strøm, forsikring, barnehage/SFO, abonnementer.
-        </p>
+        <div className="hurtigvalg">
+          {VANLIGE_KOSTNADER.filter(
+            (navn) =>
+              !(husholdning.andreFasteKostnader || []).some((k) => k.navn === navn)
+          ).map((navn) => (
+            <button
+              key={navn}
+              type="button"
+              className="hurtigvalg__chip"
+              onClick={() => leggTilFastKostnad(navn)}
+            >
+              <Plus size={12} /> {navn}
+            </button>
+          ))}
+        </div>
         {(husholdning.andreFasteKostnader || []).length === 0 && (
-          <p className="empty-state">Ingen faste kostnader lagt til.</p>
+          <p className="empty-state">
+            Ingen faste kostnader lagt til. Bruk hurtigvalgene over eller «Legg til».
+          </p>
         )}
         {(husholdning.andreFasteKostnader || []).map((k) => (
           <div key={k.id} className="list-item">
@@ -220,6 +249,7 @@ export default function HusholdningForm({ husholdning, onChange }) {
                   <input
                     type="text"
                     value={k.navn}
+                    autoFocus={sistLagtTil?.id === k.id && sistLagtTil.felt === 'navn'}
                     onChange={(e) => oppdaterKostnad(k.id, 'navn', e.target.value)}
                     placeholder="F.eks. Strøm"
                   />
@@ -228,6 +258,7 @@ export default function HusholdningForm({ husholdning, onChange }) {
                   <label>Beløp per måned</label>
                   <TallInput
                     value={k.belop}
+                    autoFocus={sistLagtTil?.id === k.id && sistLagtTil.felt === 'belop'}
                     onChange={(num) => oppdaterKostnad(k.id, 'belop', num)}
                   />
                 </div>

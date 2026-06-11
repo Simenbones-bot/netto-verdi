@@ -1,9 +1,15 @@
 import { Plus, X } from 'lucide-react'
 import { uid } from '../../utils/format.js'
 
+const ALDRE = Array.from({ length: 18 }, (_, i) => i)
+
+function alderLabel(a) {
+  return a === 0 ? 'Under 1 år' : `${a} år`
+}
+
 export default function BarnListe({ barn, onChange }) {
-  function leggTil() {
-    onChange([...(barn || []), { id: uid(), alder: 0 }])
+  function leggTil(alder) {
+    onChange([...(barn || []), { id: uid(), alder }])
   }
   function oppdater(id, alder) {
     onChange(
@@ -18,40 +24,62 @@ export default function BarnListe({ barn, onChange }) {
     <div>
       <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
         <h3 style={{ margin: 0 }}>Barn</h3>
-        <button className="btn btn--ghost btn--small" onClick={leggTil}>
+        {/* Knappen er en select i forkledning: velg alder → barnet legges til */}
+        <label className="velg-knapp btn btn--ghost btn--small">
           <Plus size={14} /> Legg til barn
-        </button>
+          <select
+            className="velg-knapp__select"
+            value=""
+            onChange={(e) => {
+              if (e.target.value !== '') leggTil(Number(e.target.value))
+            }}
+            aria-label="Legg til barn – velg alder"
+          >
+            <option value="" disabled>
+              Velg alder …
+            </option>
+            {ALDRE.map((a) => (
+              <option key={a} value={a}>
+                {alderLabel(a)}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       {(!barn || barn.length === 0) && (
-        <p className="empty-state">Ingen barn lagt til.</p>
+        <p className="empty-state">
+          Ingen barn lagt til. Trykk «Legg til barn» og velg alder.
+        </p>
       )}
 
-      {barn?.map((b, i) => (
-        <div key={b.id} className="list-item">
-          <div className="list-item__body">
-            <div className="row">
-              <div className="field">
-                <label>Barn {i + 1} – alder</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="17"
-                  value={b.alder}
-                  onChange={(e) => oppdater(b.id, e.target.value)}
-                />
-              </div>
+      {barn?.length > 0 && (
+        <div className="barn-chips">
+          {barn.map((b, i) => (
+            <div key={b.id} className="barn-chip">
+              <span className="barn-chip__navn">Barn {i + 1}</span>
+              <select
+                value={Math.max(0, Math.min(17, Number(b.alder) || 0))}
+                onChange={(e) => oppdater(b.id, e.target.value)}
+                aria-label={`Alder for barn ${i + 1}`}
+              >
+                {ALDRE.map((a) => (
+                  <option key={a} value={a}>
+                    {alderLabel(a)}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="btn--icon"
+                aria-label={`Slett barn ${i + 1}`}
+                onClick={() => slett(b.id)}
+              >
+                <X size={16} />
+              </button>
             </div>
-          </div>
-          <button
-            className="btn--icon"
-            aria-label="Slett barn"
-            onClick={() => slett(b.id)}
-          >
-            <X size={18} />
-          </button>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   )
 }
