@@ -1,4 +1,4 @@
-import { uid } from './format.js'
+import { uid, formatTall } from './format.js'
 
 export const HENDELSE_TYPER = [
   { id: 'boligkjop', label: 'Boligkjøp', kategori: 'bolig' },
@@ -66,10 +66,7 @@ export function nyHendelse(type, aar = 1) {
 }
 
 export function kortBeskrivelse(h) {
-  const fmt = (n) =>
-    Math.round(Number(n) || 0)
-      .toLocaleString('nb-NO')
-      .replace(/,/g, ' ')
+  const fmt = formatTall
   switch (h.type) {
     case 'boligkjop':
       return `${fmt(h.kjopspris)} kr (EK ${fmt(h.egenkapital)} kr)`

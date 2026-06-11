@@ -12,7 +12,7 @@ export function hentData() {
   try {
     const lagret = localStorage.getItem(LAGRING_NOKKEL)
     return lagret ? JSON.parse(lagret) : null
-  } catch (e) {
+  } catch {
     return null
   }
 }

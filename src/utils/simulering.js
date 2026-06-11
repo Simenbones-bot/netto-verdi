@@ -69,13 +69,7 @@ function gjeldendeSIFO(husholdning) {
   if (husholdning.sifoOverstyr) {
     return Number(husholdning.sifoManuell) || 0
   }
-  const antallVoksne =
-    (Number(husholdning.person1?.bruttoInntekt) >= 0 ? 1 : 0) +
-    (Number(husholdning.person2?.bruttoInntekt) > 0 ||
-    husholdning.person2?.navn
-      ? 1
-      : 0)
-  // Always count 2 voksne if person2 has any data filled
+  // Tell 2 voksne hvis person 2 har noe data utfylt
   const harP2 =
     !!husholdning.person2?.navn ||
     (Number(husholdning.person2?.bruttoInntekt) || 0) > 0
@@ -140,7 +134,7 @@ export function kjorSimulering(
     andre: (eiendeler.andre || []).reduce((s, a) => s + (Number(a.verdi) || 0), 0),
     bsu: Number(eiendeler.bsu) || 0,
     bank: Number(eiendeler.bankinnskudd) || 0,
-    lan: sumAlleLan(gjeld).map((l, i) => {
+    lan: sumAlleLan(gjeld).map((l) => {
       // Mark kategori based on origin
       const kat = (gjeld.boliglan || []).some((x) => x === l)
         ? 'boliglan'

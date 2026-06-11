@@ -1,29 +1,43 @@
-const PERSONFRADRAG = 93600
-const TRYGDEAVGIFT_SATS = 0.079
+// Skattesatser for inntektsåret 2026 (Stortingets skattevedtak, des. 2025)
+const PERSONFRADRAG = 114540
 
+const TRYGDEAVGIFT_SATS = 0.076
+const TRYGDEAVGIFT_NEDRE_GRENSE = 99650
+const TRYGDEAVGIFT_OPPTRAPPING = 0.25
+
+const MINSTEFRADRAG_SATS = 0.46
+const MINSTEFRADRAG_MAKS = 95700
+
+// Innslagspunkter — hvert trinn gjelder fra `fra` opp til neste trinns `fra`
 const TRINN = [
-  { fra: 198350, til: 279149, sats: 0.017 },
-  { fra: 279150, til: 642949, sats: 0.04 },
-  { fra: 642950, til: 926799, sats: 0.136 },
-  { fra: 926800, til: 1499999, sats: 0.166 },
-  { fra: 1500000, til: Infinity, sats: 0.176 },
+  { fra: 226100, sats: 0.017 },
+  { fra: 318300, sats: 0.04 },
+  { fra: 725050, sats: 0.137 },
+  { fra: 980100, sats: 0.168 },
+  { fra: 1467200, sats: 0.178 },
 ]
 
 function beregnTrinnskatt(brutto) {
   let sum = 0
-  for (const t of TRINN) {
-    if (brutto <= t.fra) break
-    const ovre = Math.min(brutto, t.til)
-    sum += (ovre - t.fra + 1) * t.sats
-    if (brutto <= t.til) break
+  for (let i = 0; i < TRINN.length; i++) {
+    const { fra, sats } = TRINN[i]
+    if (brutto <= fra) break
+    const til = TRINN[i + 1]?.fra ?? Infinity
+    sum += (Math.min(brutto, til) - fra) * sats
   }
-  return Math.max(0, sum)
+  return sum
 }
 
 function beregnMinstefradrag(lonn) {
-  const beregnet = 0.46 * lonn
   if (lonn <= 0) return 0
-  return Math.max(31800, Math.min(104450, beregnet))
+  return Math.min(MINSTEFRADRAG_MAKS, MINSTEFRADRAG_SATS * lonn)
+}
+
+function beregnTrygdeavgift(brutto) {
+  // Avgiften er begrenset til 25 % av inntekt over nedre grense (opptrapping)
+  const full = brutto * TRYGDEAVGIFT_SATS
+  const opptrapping = Math.max(0, brutto - TRYGDEAVGIFT_NEDRE_GRENSE) * TRYGDEAVGIFT_OPPTRAPPING
+  return Math.min(full, opptrapping)
 }
 
 export function beregnSkattPerPerson(bruttoInntekt) {
@@ -44,7 +58,7 @@ export function beregnSkattPerPerson(bruttoInntekt) {
   const trinnskatt = beregnTrinnskatt(brutto)
   const grunnlagFlat = Math.max(0, brutto - minstefradrag - PERSONFRADRAG)
   const flatSkatt = grunnlagFlat * 0.22
-  const trygdeavgift = brutto * TRYGDEAVGIFT_SATS
+  const trygdeavgift = beregnTrygdeavgift(brutto)
   const totalSkatt = trinnskatt + flatSkatt + trygdeavgift
   const nettoInntekt = brutto - totalSkatt
 

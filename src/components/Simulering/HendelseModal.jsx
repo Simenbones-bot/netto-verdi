@@ -350,11 +350,13 @@ function InntektsendringFelt({ data, set }) {
 export default function HendelseModal({ apen, init, eiendeler, onLagre, onLukk }) {
   const [data, setData] = useState(() => init || nyHendelse('boligkjop', 1))
 
-  useEffect(() => {
-    if (apen) {
-      setData(init || nyHendelse('boligkjop', 1))
-    }
-  }, [apen, init])
+  // Nullstill skjemaet når modalen åpnes (state-justering under render,
+  // jf. react.dev "You might not need an effect")
+  const [forrigeApen, setForrigeApen] = useState(apen)
+  if (apen !== forrigeApen) {
+    setForrigeApen(apen)
+    if (apen) setData(init || nyHendelse('boligkjop', 1))
+  }
 
   useEffect(() => {
     if (!apen) return

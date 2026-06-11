@@ -5,10 +5,6 @@ const nfKr = new Intl.NumberFormat('nb-NO', {
 })
 
 const nfTall = new Intl.NumberFormat('nb-NO', { maximumFractionDigits: 0 })
-const nfProsent = new Intl.NumberFormat('nb-NO', {
-  style: 'percent',
-  maximumFractionDigits: 1,
-})
 
 export function formatKr(belop) {
   const v = Number(belop) || 0
