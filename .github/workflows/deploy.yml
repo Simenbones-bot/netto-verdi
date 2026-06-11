@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/nifty-planck-nFYkf]
+    branches: [main, claude/stoic-gauss-z896eg]
   workflow_dispatch:
 
 permissions:
