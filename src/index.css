@@ -1753,3 +1753,265 @@ input, select {
   color: var(--primary);
   background: rgba(14, 122, 82, 0.06);
 }
+
+/* ─── Rapport (PDF via skriv ut) ─────────────────────────────────────────── */
+.rapport-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: #e9eeeb;
+  overflow-y: auto;
+}
+.rapport-verktoy {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.rapport-verktoy__tittel {
+  margin-right: auto;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.rapport {
+  max-width: 820px;
+  margin: 1.5rem auto 4rem;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 2.2rem 2.4rem 2rem;
+}
+.rapport h1 {
+  font-size: 1.7rem;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+.rapport h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.7rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid var(--primary);
+  color: var(--primary-dark);
+}
+.rapport h3 {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.4rem;
+}
+.rapport-topp {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid var(--primary);
+}
+.rapport-topp__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: #fff;
+  flex-shrink: 0;
+}
+.rapport-topp__meta {
+  margin: 0.15rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+.rapport-seksjon {
+  margin-bottom: 1.8rem;
+  break-inside: avoid;
+}
+.rapport-seksjon--nyside {
+  break-before: page;
+}
+.rapport-tekst {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0.6rem 0 0;
+  line-height: 1.55;
+}
+
+.rapport-statgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+.rapport-stat {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+}
+.rapport-stat--hoved {
+  background: linear-gradient(135deg, rgba(14, 122, 82, 0.08), rgba(29, 93, 138, 0.06));
+  border-color: var(--primary);
+}
+.rapport-stat__label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.rapport-stat__verdi {
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.15rem;
+}
+
+.rapport-indikatorgrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+.rapport-indikator {
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: 9px;
+  padding: 0.6rem 0.8rem;
+}
+.rapport-indikator--gronn { border-left-color: var(--success); }
+.rapport-indikator--gul { border-left-color: var(--warning); }
+.rapport-indikator--rod { border-left-color: var(--danger); }
+.rapport-indikator__topp {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.rapport-indikator__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.rapport-indikator--gronn .rapport-indikator__dot { background: var(--success); }
+.rapport-indikator--gul .rapport-indikator__dot { background: var(--warning); }
+.rapport-indikator--rod .rapport-indikator__dot { background: var(--danger); }
+.rapport-indikator__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.rapport-indikator__verdi {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0.1rem 0;
+}
+.rapport-indikator__forklaring {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.rapport-tabell {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.rapport-tabell th,
+.rapport-tabell td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.rapport-tabell th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.rapport-tabell__tall {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.rapport-tabell__kat {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.rapport-tabell__sum td {
+  font-weight: 700;
+  border-top: 2px solid var(--border-strong);
+}
+.rapport-tabell__sum--netto td {
+  color: var(--primary-dark);
+  border-top: none;
+}
+.rapport-tabell--kompakt th,
+.rapport-tabell--kompakt td {
+  padding: 0.28rem 0.45rem;
+  font-size: 0.78rem;
+}
+.rapport-tabell__rad--uthevet td {
+  background: rgba(29, 158, 95, 0.1);
+  font-weight: 600;
+}
+.rapport-graf {
+  margin: 0.75rem 0 1rem;
+  overflow-x: auto;
+}
+.rapport-bunn {
+  margin-top: 2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .rapport { padding: 1.25rem 1rem; margin: 0.75rem; }
+  .rapport-statgrid { grid-template-columns: repeat(2, 1fr); }
+  .rapport-indikatorgrid { grid-template-columns: 1fr; }
+}
+
+/* Utskrift: kun rapporten, på hvit bakgrunn med A4-marger */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+@media print {
+  html, body, #root, .app {
+    background: #fff !important;
+  }
+  body.rapport-apen .header,
+  body.rapport-apen .nav,
+  body.rapport-apen .main {
+    display: none !important;
+  }
+  body.rapport-apen .rapport-overlay {
+    position: static;
+    overflow: visible;
+    background: #fff;
+  }
+  body.rapport-apen .rapport-verktoy {
+    display: none !important;
+  }
+  body.rapport-apen .rapport {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  body.rapport-apen {
+    background: #fff;
+  }
+  .rapport-seksjon {
+    break-inside: avoid;
+  }
+  .rapport-tabell tr {
+    break-inside: avoid;
+  }
+}

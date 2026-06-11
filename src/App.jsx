@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import Header from './components/Layout/Header.jsx'
 import Navigation from './components/Layout/Navigation.jsx'
 import OversiktDashboard from './components/Oversikt/OversiktDashboard.jsx'
+import RapportVisning from './components/Rapport/RapportVisning.jsx'
 import HusholdningForm from './components/Husholdning/HusholdningForm.jsx'
 import EiendelerForm from './components/Balanse/EiendelerForm.jsx'
 import GjeldForm from './components/Balanse/GjeldForm.jsx'
@@ -85,6 +86,7 @@ export default function App() {
   const [fordeling, setFordeling] = useState(() => hentFordeling())
   const [hendelser, setHendelser] = useState(() => hentHendelser())
   const [etterGjeldfri, setEtterGjeldfri] = useState(() => hentEtterGjeldfri())
+  const [rapportApen, setRapportApen] = useState(false)
 
   useEffect(() => {
     lagreData(state)
@@ -125,7 +127,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header nettoFormue={nettoFormue} />
+      <Header nettoFormue={nettoFormue} onVisRapport={() => setRapportApen(true)} />
       <Navigation faner={FANER} aktiv={fane} onVelg={setFane} />
       <main className="main">
         {fane === 'oversikt' && (
@@ -215,6 +217,19 @@ export default function App() {
           />
         )}
       </main>
+      {rapportApen && (
+        <RapportVisning
+          husholdning={state.husholdning}
+          eiendeler={state.eiendeler}
+          gjeld={state.gjeld}
+          antagelser={state.antagelser}
+          aksjeAndel={aksjeAndel}
+          gjeldsAndel={gjeldsAndel}
+          hendelser={hendelser}
+          etterGjeldfri={etterGjeldfri}
+          onLukk={() => setRapportApen(false)}
+        />
+      )}
     </div>
   )
 }

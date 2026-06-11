@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
-import { Wallet, Download, Upload } from 'lucide-react'
+import { Wallet, Download, Upload, FileText } from 'lucide-react'
 import { eksporterData, importerData } from '../../utils/lagring.js'
 import { formatKr } from '../../utils/format.js'
 
-export default function Header({ nettoFormue }) {
+export default function Header({ nettoFormue, onVisRapport }) {
   const filInput = useRef(null)
   const [melding, setMelding] = useState(null)
 
@@ -64,6 +64,17 @@ export default function Header({ nettoFormue }) {
         </div>
       )}
       <div className="header__handlinger">
+        {onVisRapport && (
+          <button
+            type="button"
+            className="header__knapp"
+            onClick={onVisRapport}
+            title="Generer en detaljert rapport som kan lagres som PDF"
+          >
+            <FileText size={16} />
+            <span className="header__knapp-tekst">Rapport</span>
+          </button>
+        )}
         <button
           type="button"
           className="header__knapp"
