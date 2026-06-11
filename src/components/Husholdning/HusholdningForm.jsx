@@ -129,10 +129,7 @@ export default function HusholdningForm({ husholdning, onChange }) {
             <div className="summary">
               {barnetrygd.detaljer.map((b, i) => (
                 <div key={i} className="summary__row">
-                  <span>
-                    Barn {i + 1} ({b.alder} år —{' '}
-                    {b.alder < 6 ? 'forhøyet sats' : 'ordinær sats'})
-                  </span>
+                  <span>Barn {i + 1} ({b.alder} år)</span>
                   <span className="value-pos">+{formatKr(b.belop)}</span>
                 </div>
               ))}
