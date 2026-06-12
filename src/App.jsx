@@ -32,6 +32,13 @@ const initialState = {
     sifoOverstyr: false,
     sifoManuell: 0,
     andreFasteKostnader: [],
+    hoytider: {
+      inkluder: true,
+      ferieAuto: true,
+      ferieBelop: 0,
+      julAuto: true,
+      julBelop: 0,
+    },
   },
   eiendeler: {
     boliger: [],

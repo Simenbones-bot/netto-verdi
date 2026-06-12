@@ -250,6 +250,12 @@ export default function KontantstromOversikt({
             <span>Andre faste kostnader</span>
             <span className="value-neg">−{formatKr(k.faste)}</span>
           </div>
+          {k.hoytider > 0 && (
+            <div className="summary__row">
+              <span>Ferie og jul (årlig, fordelt per måned)</span>
+              <span className="value-neg">−{formatKr(k.hoytider)}</span>
+            </div>
+          )}
           <div className="summary__row summary__row--big">
             <span>Månedlig overskudd</span>
             <span className={pos ? 'value-pos' : 'value-neg'}>

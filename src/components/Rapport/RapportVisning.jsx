@@ -340,6 +340,12 @@ export default function RapportVisning({
                 <td>Andre faste kostnader</td>
                 <td className="rapport-tabell__tall">−{formatKr(k.faste)}</td>
               </tr>
+              {k.hoytider > 0 && (
+                <tr>
+                  <td>Ferie og jul (årlig budsjett fordelt per måned)</td>
+                  <td className="rapport-tabell__tall">−{formatKr(k.hoytider)}</td>
+                </tr>
+              )}
               <tr>
                 <td>Terminbeløp på lån</td>
                 <td className="rapport-tabell__tall">−{formatKr(k.terminer)}</td>

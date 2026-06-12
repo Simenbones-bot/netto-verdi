@@ -1,5 +1,6 @@
 import { beregnHusholdningSkatt } from './skatt.js'
 import { beregnSIFO, beregnBarnetrygd } from './sifo.js'
+import { beregnHoytider } from './hoytider.js'
 import { anvendHendelser, rensInntektsendringer, effektivLonn } from './hendelser.js'
 
 function terminbelop(restgjeld, arligRente, lopetidAr) {
@@ -121,7 +122,8 @@ export function kjorSimulering(
     baseLonn2: Number(husholdning.person2?.bruttoInntekt) || 0,
     barnetrygd: beregnBarnetrygd(husholdning.barn || []).total,
     sifoMnd: gjeldendeSIFO(husholdning),
-    fasteMnd: sumFasteKostnader(husholdning),
+    // Ferie/jul behandles som fast månedskostnad og justeres med inflasjon
+    fasteMnd: sumFasteKostnader(husholdning) + beregnHoytider(husholdning).perMaaned,
     boliger: (eiendeler.boliger || []).map((b) => ({
       id: b.id,
       verdi: Number(b.verdi) || 0,
@@ -310,8 +312,9 @@ export function oppsummerKontantstrom(husholdning, gjeld) {
   const nettoMaaned = nettoLonnMaaned + barnetrygd
   const sifo = gjeldendeSIFO(husholdning)
   const faste = sumFasteKostnader(husholdning)
+  const hoytider = beregnHoytider(husholdning).perMaaned
   const terminer = totalTerminBelopPerMaaned(gjeld)
-  const utMaaned = sifo + faste + terminer
+  const utMaaned = sifo + faste + hoytider + terminer
   const overskuddMaaned = nettoMaaned - utMaaned
 
   return {
@@ -320,6 +323,7 @@ export function oppsummerKontantstrom(husholdning, gjeld) {
     nettoMaaned,
     sifo,
     faste,
+    hoytider,
     terminer,
     utMaaned,
     overskuddMaaned,

@@ -221,8 +221,8 @@ export default function OversiktDashboard({
               <span className="value-pos">{formatKr(k.nettoMaaned)}</span>
             </div>
             <div className="summary__row">
-              <span className="value-muted">SIFO + faste kostnader</span>
-              <span className="value-neg">−{formatKr(k.sifo + k.faste)}</span>
+              <span className="value-muted">SIFO, faste og ferie/jul</span>
+              <span className="value-neg">−{formatKr(k.sifo + k.faste + k.hoytider)}</span>
             </div>
             <div className="summary__row">
               <span className="value-muted">Terminbeløp lån</span>

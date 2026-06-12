@@ -5,6 +5,7 @@ import SkattKalkulator from './SkattKalkulator.jsx'
 import SIFODetaljer from './SIFODetaljer.jsx'
 import TallInput from '../shared/TallInput.jsx'
 import { beregnSIFO, beregnBarnetrygd } from '../../utils/sifo.js'
+import { beregnHoytider } from '../../utils/hoytider.js'
 import { beregnHusholdningSkatt } from '../../utils/skatt.js'
 import { formatKr, uid } from '../../utils/format.js'
 
@@ -79,7 +80,13 @@ export default function HusholdningForm({ husholdning, onChange }) {
     (s, k) => s + (Number(k.belop) || 0),
     0
   )
-  const disponibelt = nettoMaaned - sifoBrukt - fasteSum
+  const hoytider = beregnHoytider(husholdning)
+  const hoytiderState = husholdning.hoytider || {}
+  const disponibelt = nettoMaaned - sifoBrukt - fasteSum - hoytider.perMaaned
+
+  function settHoytider(patch) {
+    onChange({ ...husholdning, hoytider: { ...hoytiderState, ...patch } })
+  }
 
   return (
     <>
@@ -277,6 +284,90 @@ export default function HusholdningForm({ husholdning, onChange }) {
 
       <div className="card">
         <div className="card__title">
+          <h3>Ferie og jul</h3>
+        </div>
+        <p className="helper-text" style={{ marginBottom: '0.6rem' }}>
+          Store årlige poster som ofte glemmes i månedsbudsjettet. Beløpene
+          fordeles per måned og trekker ned spareraten. Snittet beregnes ut fra
+          familien ({hoytider.voksne} {hoytider.voksne === 1 ? 'voksen' : 'voksne'}
+          {hoytider.barn > 0 && `, ${hoytider.barn} barn`}) basert på norske
+          forbruksundersøkelser.
+        </p>
+        <label className="checkbox" style={{ marginBottom: '0.75rem' }}>
+          <input
+            type="checkbox"
+            checked={hoytider.inkluder}
+            onChange={(e) => settHoytider({ inkluder: e.target.checked })}
+          />
+          Inkluder ferie- og julebudsjett i kontantstrømmen
+        </label>
+
+        {hoytider.inkluder && (
+          <>
+            <div className="row">
+              <div className="field">
+                <label>Feriebudsjett per år</label>
+                <TallInput
+                  value={hoytider.ferie}
+                  onChange={(num) =>
+                    settHoytider({ ferieAuto: false, ferieBelop: num })
+                  }
+                  disabled={hoytiderState.ferieAuto !== false}
+                />
+                <label className="checkbox" style={{ fontSize: '0.83rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={hoytiderState.ferieAuto !== false}
+                    onChange={(e) =>
+                      settHoytider({
+                        ferieAuto: e.target.checked,
+                        ferieBelop: hoytider.snitt.ferie,
+                      })
+                    }
+                  />
+                  Bruk snitt for familien ({formatKr(hoytider.snitt.ferie)})
+                </label>
+              </div>
+              <div className="field">
+                <label>Jul og høytider per år</label>
+                <TallInput
+                  value={hoytider.jul}
+                  onChange={(num) =>
+                    settHoytider({ julAuto: false, julBelop: num })
+                  }
+                  disabled={hoytiderState.julAuto !== false}
+                />
+                <label className="checkbox" style={{ fontSize: '0.83rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={hoytiderState.julAuto !== false}
+                    onChange={(e) =>
+                      settHoytider({
+                        julAuto: e.target.checked,
+                        julBelop: hoytider.snitt.jul,
+                      })
+                    }
+                  />
+                  Bruk snitt for familien ({formatKr(hoytider.snitt.jul)})
+                </label>
+              </div>
+            </div>
+            <div className="summary" style={{ marginTop: '0.25rem' }}>
+              <div className="summary__row">
+                <span>Sum per år</span>
+                <span>{formatKr(hoytider.totalArlig)}</span>
+              </div>
+              <div className="summary__row summary__row--big">
+                <span>Fordelt per måned</span>
+                <span className="value-neg">−{formatKr(hoytider.perMaaned)}</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="card">
+        <div className="card__title">
           <h3>Oppsummering – husholdning</h3>
         </div>
         <div className="summary">
@@ -310,6 +401,12 @@ export default function HusholdningForm({ husholdning, onChange }) {
             <span>Andre faste kostnader</span>
             <span>{formatKr(fasteSum)}</span>
           </div>
+          {hoytider.perMaaned > 0 && (
+            <div className="summary__row">
+              <span>Ferie og jul (årlig, fordelt per måned)</span>
+              <span>{formatKr(hoytider.perMaaned)}</span>
+            </div>
+          )}
           <div className="summary__row summary__row--big">
             <span>Disponibelt beløp per måned</span>
             <span className={disponibelt >= 0 ? 'value-pos' : 'value-neg'}>
